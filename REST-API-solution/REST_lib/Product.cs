@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace REST_lib
 {
+    [DataContract]
     public class Product
     {
+        [DataMember]
         public int ProductId { get; set; }
+
+        [DataMember]
         public string Description { get; set; }
+
+        [DataMember]
         public int Quantity { get; set; }
+
+        [DataMember]
         public float Price { get; set; }
 
 
-
+        
         public override string ToString()
         {
             return "ID:\t" + ProductId + "\tDescription:\t" + Description

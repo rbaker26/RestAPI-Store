@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+
+
 
 using REST_lib;
 
@@ -16,6 +19,8 @@ namespace ProductsREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Product>> Get()
         {
+
+
             return SQL_Interface.Instance.GetProducts();
         }
 
