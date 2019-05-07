@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+
+using System.IO;
 
 using REST_lib;
 
@@ -16,6 +19,32 @@ namespace ProductsREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Product>> Get()
         {
+            MemoryStream ms = new MemoryStream();
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(List<Product>));
+
+            ser.WriteObject(ms, SQL_Interface.Instance.GetProducts());
+
+            ms.Position = 0;
+            StreamReader sr = new StreamReader(ms);
+            Console.Write("JSON form of Person object: ");
+            Console.WriteLine(sr.ReadToEnd());
+
+
+            List<Product> fromJ = new List<Product>();
+            ms.Position = 0;
+            fromJ = (List<Product>)ser.ReadObject(ms);
+
+            Console.Out.WriteLine("***********************");
+            Console.Out.WriteLine("***********************");
+
+            foreach(Product p in fromJ)
+            {
+                Console.Out.WriteLine(p);
+            }
+
+            Console.Out.WriteLine("***********************");
+
+
             return SQL_Interface.Instance.GetProducts();
         }
 
@@ -23,6 +52,7 @@ namespace ProductsREST.Controllers
         [HttpGet("{productId}")]
         public ActionResult<Product> Get(int productId)
         {
+            DataContractJsonSerializer ds;
             return SQL_Interface.Instance.GetProductById(productId);
         }
 
