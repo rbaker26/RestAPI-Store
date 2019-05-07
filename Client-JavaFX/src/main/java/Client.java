@@ -14,15 +14,16 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        primaryStage.setTitle("SABRCATST RestAPI-Store");
+//        primaryStage.setTitle("SABRCATST RestAPI-Store");
+//
+//        loginController = new LoginController();
+//
+//        loginController.getEnterButton().setOnAction(value -> {
+//            System.out.println("Entering with email...");
+//        });
 
-        loginController = new LoginController();
 
-        loginController.getEnterButton().setOnAction(value -> {
-            System.out.println("Entering with email...");
-        });
-
-
+        System.out.println("\n\n****************** IT WORKS ******************\n\n");
 
 
     }
