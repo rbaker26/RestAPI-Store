@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace cartREST
 {
@@ -14,6 +15,11 @@ namespace cartREST
     {
         public static void Main(string[] args)
         {
+			REST_lib.Cart cart = new REST_lib.Cart();
+			cart.test = 10;
+			string output = JsonConvert.SerializeObject(cart);
+
+
             CreateWebHostBuilder(args).Build().Run();
         }
 

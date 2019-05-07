@@ -6,5 +6,8 @@ namespace REST_lib
 {
     public class Cart
     {
+		public int test {
+			get; set;
+		}
     }
 }
