@@ -25,6 +25,7 @@ public class LoginController extends AbstractSceneController {
 
         emailField = new TextField();
         emailField.setPrefColumnCount(10);
+        enterButton = new Button("Enter");
 
 
         GridPane.setConstraints(emailLabel, 0, 0);
@@ -36,8 +37,7 @@ public class LoginController extends AbstractSceneController {
 
         grid.getChildren().add(emailField);
 
-
-        GridPane.setConstraints(enterButton, 0, 1);
+       GridPane.setConstraints(enterButton, 0, 1);
 
         grid.getChildren().add(enterButton);
 
