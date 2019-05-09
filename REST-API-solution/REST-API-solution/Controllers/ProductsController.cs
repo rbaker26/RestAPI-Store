@@ -19,6 +19,24 @@ namespace ProductsREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Product>> Get()
         {
+            //string s = JsonConverter.ToJason(SQL_Interface.Instance.GetProducts());;
+            //Console.Out.WriteLine("****************************");
+            //Console.Out.WriteLine(s);
+            //Console.Out.WriteLine("****************************");
+
+
+
+            //Console.Out.WriteLine("****************************");
+            //Console.Out.WriteLine("****************************");
+            //List<Product> lp = JsonConverter.FromJson<List<Product>>(s);
+            //foreach(Product p in lp)
+            //{
+            //    Console.Out.WriteLine(p);
+            //}
+            //Console.Out.WriteLine("****************************");
+            Product p = new Product(1, "desc", 2, 9.99f);
+            Console.Out.WriteLine(p.GetHashCode());
+            Console.Out.WriteLine(p);
 
 
             return SQL_Interface.Instance.GetProducts();
