@@ -6,5 +6,6 @@ dotnet: 2.1.502
 
 
 script:
+ - nuget restore /REST-API-solution/REST-API-solution.sln 
  - dotnet restore -p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503
  - dotnet test
