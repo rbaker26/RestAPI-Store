@@ -6,10 +6,7 @@ dotnet: 2.1.502
 
 
 script:
- - ls -l 
  - cd ./REST-API-solution/
- - echo 
- - ls -l
  - dotnet restore
  - dotnet test
  
