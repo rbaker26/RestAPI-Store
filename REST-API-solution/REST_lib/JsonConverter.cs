@@ -14,7 +14,7 @@ namespace REST_lib
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static string ToJason<T>(T obj)
+        public static string ToJson<T>(T obj)
         {
             try
             {
