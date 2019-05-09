@@ -1,0 +1,10 @@
+language: csharp
+solution: /REST-API-solution/REST-API-solution.sln
+
+mono: none
+dotnet: 2.1.502
+
+
+script:
+ - dotnet restore
+ - dotnet test
