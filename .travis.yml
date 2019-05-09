@@ -2,9 +2,13 @@ language: csharp
 solution: /REST-API-solution/REST-API-solution.sln 
 
 mono: none
-dotnet: 2.1.502
+dotnet: 2.1.0
 
 
 script:
- - dotnet restore -p:RestoreUseSkipNonexistentTargets=false
+ - ls -l 
+ cd /REST-API-solution/
+ echo 
+ ls -l
+ - dotnet restore
  - dotnet test
