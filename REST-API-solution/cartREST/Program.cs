@@ -25,6 +25,9 @@ namespace cartREST
 			// TODO Any setup should happen here. This will always get run.
 			Messaging.Instance.ForceAwake();
 
+			Product p = new Product(20, "Description here", 23, 4.99f);
+			Messaging.Instance.SendMessage(p, Messaging.MessageType.NewOrders);
+
 			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();

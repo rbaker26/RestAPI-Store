@@ -10,8 +10,47 @@ namespace REST_lib {
 			get; private set;
 		}
 
+		public enum MessageType {
+			NewOrders, ProductUpdates
+		}
+
 		public IConnection connection;
 		public IModel channel;
+
+		public void SendMessage<T>(T msg, MessageType mType) {
+			string exchangeName = SetupExchange(mType);
+
+			string jsonMsg = JsonConverter.ToJson(msg);
+
+			Console.Out.WriteLine(jsonMsg);
+			Console.Out.Flush();
+
+			byte[] byteMsg = Encoding.UTF8.GetBytes(jsonMsg);
+			channel.BasicPublish(
+				exchange: exchangeName,
+				routingKey: "",
+				basicProperties: null,
+				body: byteMsg
+			);
+		}
+
+		/// <summary>
+		/// Configures the exchange in a consistent way and then returns the exchange name.
+		/// </summary>
+		/// <param name="mType">The type of exchange.</param>
+		/// <returns>The name of the exchange.</returns>
+		private String SetupExchange(MessageType mType) {
+			string exchangeName = mType.ToString();
+
+			switch(mType) {
+				case MessageType.ProductUpdates:
+				case MessageType.NewOrders:
+					channel.ExchangeDeclare(exchange: exchangeName, type: "fanout");
+					break;
+			}
+
+			return exchangeName;
+		}
 
 		#region Instance management
 
@@ -22,7 +61,7 @@ namespace REST_lib {
 
 		[Obsolete]
 		public void ForceAwake() {
-
+			SetupExchange(MessageType.NewOrders);
 		}
 
 		private Messaging() {
@@ -36,15 +75,6 @@ namespace REST_lib {
 		#region IDisposable Support
 
 		protected virtual void Dispose(bool disposing) {
-			/*
-			if(!disposedValue) {
-
-				if(disposing) {
-				}
-
-				disposedValue = true;
-			}
-			*/
 
 			if(disposing) {
 				Console.Out.WriteLine("Blah");
