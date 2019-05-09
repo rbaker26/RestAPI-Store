@@ -6,32 +6,56 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 namespace REST_lib
 {
-    class JsonConverter
+    public static class JsonConverter
     {
-        public static string ToJason<T>(T t)
+        /// <summary>
+        /// Converts an Object to JSON
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ToJson<T>(T obj)
         {
-            MemoryStream ms = new MemoryStream();
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
 
-            ser.WriteObject(ms,t);
+                ser.WriteObject(ms, obj);
 
-            ms.Position = 0;
-            StreamReader sr = new StreamReader(ms);
-            return sr.ReadToEnd();
+                ms.Position = 0;
+                StreamReader sr = new StreamReader(ms);
+                return sr.ReadToEnd();
+            }
+            catch(Exception)
+            {
+                return "[]";
+            }
+
         }
 
-        public static T FromJson<T>(string s)
+        /// <summary>
+        /// Converts JSON to an Object of type T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public static T FromJson<T>(string json)
         {
-            T t;
+            try
+            {
+                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
 
-            MemoryStream ms = new MemoryStream();
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+                ms.Position = 0;
+                T t = (T)ser.ReadObject(ms);
 
-
-            ms.Position = 0;
-            t = (T)ser.ReadObject(ms);
-
-            return t;
+                return t;
+            }
+            catch(Exception)
+            {
+                return default(T);
+            }
         }
 
 

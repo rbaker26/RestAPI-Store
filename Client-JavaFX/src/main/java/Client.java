@@ -14,17 +14,35 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-//        primaryStage.setTitle("SABRCATST RestAPI-Store");
-//
-//        loginController = new LoginController();
-//
-//        loginController.getEnterButton().setOnAction(value -> {
-//            System.out.println("Entering with email...");
-//        });
 
 
-        System.out.println("\n\n****************** IT WORKS ******************\n\n");
+        try {
+            primaryStage.setTitle("SABRCATST RestAPI-Store");
+
+       loginController = new LoginController();
+
+        loginController.getEnterButton().setOnAction(value -> {
+            System.out.println("Entering with email...");
+        });
+
+           // System.out.println("\n\n****************** IT WORKS ******************\n\n");
+
+            loginController.applyScene(primaryStage);
+            primaryStage.setWidth(initHeight);
+            primaryStage.setHeight(initHeight);
+            primaryStage.show();
+
+        }
+
+        catch(Exception ex) {
+            // This is so that we get better information on exceptions. By default,
+            // JavaFX swallows the exception and closes without saying anything useful.
+            ex.printStackTrace();
+            throw ex;
+        }
 
 
     }
+
+
 }
