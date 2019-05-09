@@ -12,3 +12,4 @@ script:
  ls -l
  - dotnet restore
  - dotnet test
+ 
