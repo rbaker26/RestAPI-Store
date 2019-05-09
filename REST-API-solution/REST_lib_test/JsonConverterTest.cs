@@ -16,7 +16,7 @@ namespace REST_lib_test
             Product p = new Product(1, "hammer", 55, 4.50f);
             string expected = "{\"Description\":\"" + p.Description + "\",\"Price\":" + p.Price + ",\"ProductId\":" + p.ProductId + ",\"Quantity\":" + p.Quantity + "}";
 
-            string result = JsonConverter.ToJason(p);
+            string result = JsonConverter.ToJson(p);
             Assert.AreEqual(result, expected);
         }
 
