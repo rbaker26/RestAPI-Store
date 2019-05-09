@@ -22,6 +22,7 @@ javafx {
 }
 
 dependencies {
+    compile "com.sparkjava:spark-core:2.8.0" // add to build.gradle (for Java Users)
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 mainClassName = 'Client'
