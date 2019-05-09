@@ -48,6 +48,9 @@ namespace REST_lib {
 
 			if(disposing) {
 				Console.Out.WriteLine("Blah");
+
+				channel?.Close();
+				connection?.Close();
 			}
 		}
 
