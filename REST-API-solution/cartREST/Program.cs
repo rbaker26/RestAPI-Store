@@ -22,14 +22,17 @@ namespace cartREST
 			REST_lib.Cart cart2 = JsonConvert.DeserializeObject<REST_lib.Cart>(output);
 			*/
 
+			// TODO Any setup should happen here. This will always get run.
 			Messaging.Instance.ForceAwake();
 
-			//CreateWebHostBuilder(args).Build().Run();
-			IWebHost host = CreateWebHostBuilder(args).Build();
-			host.RunAsync();
-			host.WaitForShutdown();
-
-			Messaging.Instance.Dispose();
+			try {
+				IWebHost host = CreateWebHostBuilder(args).Build();
+				host.RunAsync();
+				host.WaitForShutdown();
+			}
+			finally {
+				Messaging.Instance.Dispose();
+			}
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) {

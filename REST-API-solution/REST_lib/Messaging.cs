@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RabbitMQ.Client;
 
 namespace REST_lib {
 	public class Messaging : IDisposable {
@@ -9,17 +10,27 @@ namespace REST_lib {
 			get; private set;
 		}
 
+		public IConnection connection;
+		public IModel channel;
+
+		#region Instance management
+
 		static Messaging() {
 			Instance = new Messaging();
 		}
 
-		private Messaging() {
-			Console.Out.WriteLine("Setting up RabbitMQ.");
-		}
 
 		[Obsolete]
 		public void ForceAwake() {
 
+		}
+
+		private Messaging() {
+			Console.Out.WriteLine("Setting up RabbitMQ.");
+
+			ConnectionFactory factory = new ConnectionFactory() { HostName = "localhost" };
+			connection = factory.CreateConnection();
+			channel = connection.CreateModel();
 		}
 
 		#region IDisposable Support
@@ -52,6 +63,8 @@ namespace REST_lib {
 			Dispose(false);
 		}
 		#endregion
+		#endregion
+
 
 	}
 }
