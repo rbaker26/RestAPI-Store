@@ -14,19 +14,9 @@ namespace cartREST
 {
 	public class Program {
 		public static void Main(string[] args) {
-			/*
-			REST_lib.Cart cart = new REST_lib.Cart();
-			cart.test = 10;
-			string output = JsonConvert.SerializeObject(cart);
 
-			REST_lib.Cart cart2 = JsonConvert.DeserializeObject<REST_lib.Cart>(output);
-			*/
-
-			// TODO Any setup should happen here. This will always get run.
-			Messaging.Instance.ForceAwake();
-
-			Product p = new Product(20, "Description here", 23, 4.99f);
-			Messaging.Instance.SendMessage(p, Messaging.MessageType.NewOrders);
+			//Product p = new Product(20, "Description here", 23, 4.99f);
+			//Messenger.Instance.SendMessage(p, Messenger.MessageType.NewOrders);
 
 			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
@@ -34,7 +24,7 @@ namespace cartREST
 				host.WaitForShutdown();
 			}
 			finally {
-				Messaging.Instance.Dispose();
+				Messenger.Instance.Dispose();
 			}
 		}
 
