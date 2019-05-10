@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace REST_lib {
 	public class Messaging : IDisposable {
@@ -14,8 +15,8 @@ namespace REST_lib {
 			NewOrders, ProductUpdates
 		}
 
-		public IConnection connection;
-		public IModel channel;
+		public IConnection Connection { get; private set; }
+		public IModel Channel { get; private set; }
 
 		public void SendMessage<T>(T msg, MessageType mType) {
 			string exchangeName = SetupExchange(mType);
@@ -26,7 +27,7 @@ namespace REST_lib {
 			Console.Out.Flush();
 
 			byte[] byteMsg = Encoding.UTF8.GetBytes(jsonMsg);
-			channel.BasicPublish(
+			Channel.BasicPublish(
 				exchange: exchangeName,
 				routingKey: "",
 				basicProperties: null,
@@ -45,7 +46,7 @@ namespace REST_lib {
 			switch(mType) {
 				case MessageType.ProductUpdates:
 				case MessageType.NewOrders:
-					channel.ExchangeDeclare(exchange: exchangeName, type: "fanout");
+					Channel.ExchangeDeclare(exchange: exchangeName, type: "fanout");
 					break;
 			}
 
@@ -68,8 +69,8 @@ namespace REST_lib {
 			Console.Out.WriteLine("Setting up RabbitMQ.");
 
 			ConnectionFactory factory = new ConnectionFactory() { HostName = "localhost" };
-			connection = factory.CreateConnection();
-			channel = connection.CreateModel();
+			Connection = factory.CreateConnection();
+			Channel = Connection.CreateModel();
 		}
 
 		#region IDisposable Support
@@ -79,8 +80,8 @@ namespace REST_lib {
 			if(disposing) {
 				Console.Out.WriteLine("Blah");
 
-				channel?.Close();
-				connection?.Close();
+				Channel?.Close();
+				Connection?.Close();
 			}
 		}
 
