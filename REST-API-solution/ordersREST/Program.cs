@@ -14,8 +14,15 @@ namespace ordersREST
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+			try {
+				IWebHost host = CreateWebHostBuilder(args).Build();
+				host.RunAsync();
+				host.WaitForShutdown();
+			}
+			finally {
+				REST_lib.Messenger.Instance.Dispose();
+			}
+		}
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
