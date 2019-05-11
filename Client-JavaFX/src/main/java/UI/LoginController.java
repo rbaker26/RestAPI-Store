@@ -9,6 +9,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.controlsfx.control.PopOver;
 
 public class LoginController extends AbstractSceneController {
@@ -17,7 +19,9 @@ public class LoginController extends AbstractSceneController {
     private static final double popupOffsetY = 5;
 
     private TextField emailField;
+    private TextField quantityField;
     private Button enterButton;
+    private Button addToCartButton;
 
     private double mouseX;
     private double mouseY;
@@ -26,6 +30,7 @@ public class LoginController extends AbstractSceneController {
     public LoginController() {
 
         GridPane grid = new GridPane();
+        GridPane desGrid = new GridPane();
         ListView productList = new ListView();
         productList.getItems().add("Item 1");
         productList.getItems().add("Item 2");
@@ -41,16 +46,44 @@ public class LoginController extends AbstractSceneController {
 
         Label instructLabel = new Label("Sign In to view cart and orders");
 
+        Label qtyEnteredLabel = new Label("How many would you like to order?: ");
+
+        Label descriptionLabel = new Label("Description: ");
+
+        Label priceLabel = new Label("Price: ");
+
+        Label quantityLabel = new Label("Quantity: ");
+
         emailField = new TextField();
         emailField.setPrefColumnCount(10);
+        quantityField = new TextField();
+        quantityField.setPrefColumnCount(4);
 
         PopOver popUp = new PopOver();
 
+        popUp.setTitle("Product Information");
         popUp.setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
         popUp.setAutoHide(false);
         popUp.setDetachable(true);
 
+
         enterButton = new Button("Sign In");
+
+
+        addToCartButton = new Button("Add To Cart");
+
+        desGrid.setAlignment(Pos.CENTER);
+        desGrid.add(descriptionLabel,5, 0, 1, 2);
+        desGrid.add(priceLabel, 5, 2, 1, 2);
+        desGrid.add(quantityLabel, 5, 4, 1, 1);
+        desGrid.add(qtyEnteredLabel, 5, 6, 1, 1);
+        desGrid.add(quantityField, 7, 6, 1, 1);
+        desGrid.add(addToCartButton, 5, 8, 1, 2);
+
+        desGrid.setMinSize(300, 200);
+
+        popUp.setContentNode(desGrid);
+
 
         ScrollPane scrollPane = new ScrollPane(productList);
 
