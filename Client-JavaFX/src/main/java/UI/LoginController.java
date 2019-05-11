@@ -3,16 +3,25 @@ package UI;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.controlsfx.control.PopOver;
 
 public class LoginController extends AbstractSceneController {
 
+    private static final double popupOffsetX = 10;
+    private static final double popupOffsetY = 5;
+
     private TextField emailField;
     private Button enterButton;
+
+    private double mouseX;
+    private double mouseY;
+
 
     public LoginController() {
 
@@ -59,12 +68,19 @@ public class LoginController extends AbstractSceneController {
 //PROBLEM - select item in listview and popup should display out, but error is that the popOver does not point to the right
         //row in listview which i can't figure out why the parameters in show function are the way they are.
 
+        productList.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent event) {
+                mouseX = event.getScreenX();
+                mouseY = event.getScreenY();
+            }
+        });
+
         productList.getSelectionModel().selectedItemProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
                 System.out.println("SELECTED MEEEE");
 
-                   popUp.show(grid, 5,5);
+                   popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
 
 
             }
