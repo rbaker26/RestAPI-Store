@@ -147,10 +147,63 @@ namespace ProductsREST
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
 
-
             return temp;
         }
 
+
+        public void ReduceItemQuantity(int ProductId, int Quantity)
+        {
+
+
+            MySqlDataReader mysql_datareader;
+            int orgQuantity = -1;
+            try
+            {
+                // Get Quantity of item in database
+                string query1 = "SELECT quantity FROM products WHERE product_id = (@id) LIMIT 1;";
+                MySqlCommand command = m_dbConnection.CreateCommand();
+                command.CommandText = query1;
+                command.Parameters.Add("@id", MySqlDbType.Int32).Value = ProductId;
+
+                mysql_datareader = command.ExecuteReader();
+                while (mysql_datareader.Read())
+                {
+                    orgQuantity = mysql_datareader.GetInt32(0);
+                }
+                mysql_datareader.Close();
+
+                // Make sure the is enough inventory
+                if (orgQuantity < Quantity)
+                {
+                    throw new ArgumentException("Purchased qantity is greater than stored quantity", "Quantity");
+                }
+
+
+                // Reduce the quantity of the item by n
+                string query2 = "UPDATE products SET quantity = (@newQuantity) WHERE product_id = (@id);";
+                command = m_dbConnection.CreateCommand();
+                command.CommandText = query2;
+
+                command.Parameters.Add("@id", MySqlDbType.Int32).Value = ProductId;
+                command.Parameters.Add("@newQuantity", MySqlDbType.Int32).Value = orgQuantity - Quantity;
+
+
+
+                int rows_affected = command.ExecuteNonQuery();
+                //Console.Out.WriteLine("Rows Affected:\t" + rows_affected);
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("\n\n**********************************************************************");
+                Console.Out.WriteLine(e.Message);
+                Console.Out.WriteLine(e.InnerException);
+                Console.Out.WriteLine(e.Source);
+                Console.Out.WriteLine("**********************************************************************\n\n");
+            }
+
+            
+
+        }
 
     }
 }
