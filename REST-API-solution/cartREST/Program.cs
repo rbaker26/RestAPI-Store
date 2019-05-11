@@ -7,18 +7,30 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using REST_lib;
 
 namespace cartREST
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+	public class Program {
+		public static void Main(string[] args) {
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
-    }
+			//Product p = new Product(20, "Description here", 23, 4.99f);
+			//Messenger.Instance.SendMessage(p, Messenger.MessageType.NewOrders);
+
+			try {
+				IWebHost host = CreateWebHostBuilder(args).Build();
+				host.RunAsync();
+				host.WaitForShutdown();
+			}
+			finally {
+				Messenger.Instance.Dispose();
+			}
+		}
+
+		public static IWebHostBuilder CreateWebHostBuilder(string[] args) {
+            return WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+		}
+
+	}
 }
