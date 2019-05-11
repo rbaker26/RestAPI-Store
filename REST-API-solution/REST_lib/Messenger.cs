@@ -121,7 +121,7 @@ namespace REST_lib {
 		/// Set up our connection to the RabbitMQ server and open a channel.
 		/// </summary>
 		private Messenger() {
-			Console.Out.WriteLine("Setting up RabbitMQ.");
+			Console.Out.WriteLine("Booting up RabbitMQ.");
 
 			ConnectionFactory factory = new ConnectionFactory() { HostName = "localhost" };
 			Connection = factory.CreateConnection();
@@ -135,7 +135,7 @@ namespace REST_lib {
 		protected virtual void Dispose(bool disposing) {
 
 			if(disposing) {
-				//Console.Out.WriteLine("Blah");
+				Console.Out.WriteLine("Shutting down RabbitMQ.");
 
 				Channel?.Close();
 				Connection?.Close();
