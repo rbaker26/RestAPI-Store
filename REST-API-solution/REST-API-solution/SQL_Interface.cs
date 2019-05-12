@@ -151,9 +151,10 @@ namespace ProductsREST
         }
 
 
-        public void ReduceItemQuantity(int ProductId, int Quantity)
+        public void ReduceItemQuantity(ProductUpdate productUpdate)
         {
-
+            int ProductId = productUpdate.ProductId;
+            int Quantity = productUpdate.QuantityToBeRemoved;
 
             MySqlDataReader mysql_datareader;
             int orgQuantity = -1;

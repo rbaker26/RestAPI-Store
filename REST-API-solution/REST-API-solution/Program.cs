@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using productsREST;
+using REST_lib;
 
 namespace REST_API_solution
 {
@@ -14,12 +16,18 @@ namespace REST_API_solution
     {
         public static void Main(string[] args)
         {
-			try {
+			try
+            {
+                Receive r = new Receive();
+
 				IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();
 				host.WaitForShutdown();
-			}
-			finally {
+
+
+            }
+			finally
+            {
 				REST_lib.Messenger.Instance.Dispose();
 			}
 		}
