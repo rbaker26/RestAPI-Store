@@ -14,8 +14,6 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-
-
         try {
             primaryStage.setTitle("SABRCATST RestAPI-Store");
 
@@ -43,6 +41,7 @@ public class Client extends Application {
 
 
     }
+
 
 
 }
