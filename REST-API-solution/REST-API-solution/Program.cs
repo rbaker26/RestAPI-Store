@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -18,9 +19,10 @@ namespace REST_API_solution
         {
 			try
             {
-                Receive r = new Receive();
 
-				IWebHost host = CreateWebHostBuilder(args).Build();
+               // Receive r = new Receive();
+
+                IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();
 				host.WaitForShutdown();
 

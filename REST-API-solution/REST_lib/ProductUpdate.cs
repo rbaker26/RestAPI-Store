@@ -18,13 +18,13 @@ namespace REST_lib
         //********************************************************************************
         // Constructors
         //********************************************************************************
-        ProductUpdate()
+        public ProductUpdate()
         {
             ProductId = 0;
             QuantityToBeRemoved = 0;
         }
 
-        ProductUpdate(int ProductId, int QuantityToBeRemoved)
+        public ProductUpdate(int ProductId, int QuantityToBeRemoved)
         {
             this.ProductId = ProductId;
             this.QuantityToBeRemoved = QuantityToBeRemoved;

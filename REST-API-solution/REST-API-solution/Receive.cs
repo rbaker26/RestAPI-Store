@@ -10,6 +10,9 @@ using REST_lib;
 
 namespace productsREST
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Receive
     {
         public Receive()
