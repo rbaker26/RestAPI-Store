@@ -117,7 +117,7 @@ namespace cartREST
                 command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
                 int row_affected = command.ExecuteNonQuery();
 
-                Console.Out.WriteLine("Rows affected:\t" + row_affected);
+               // Console.Out.WriteLine("Rows affected:\t" + row_affected);
             }
             catch (Exception e)
             {

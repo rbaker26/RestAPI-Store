@@ -18,14 +18,14 @@ namespace cartREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ProductUpdate>> Get()
         {
-            return SQL_Interface.Instance.PurchaseCart("keeneisgay@gmail.com");
+            return null;
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet("{email}")]
+        public ActionResult<IEnumerable<ProductUpdate>> Get(string email)
         {
-            return "value";
+            return SQL_Interface.Instance.PurchaseCart(email);
         }
 
         // POST api/values
