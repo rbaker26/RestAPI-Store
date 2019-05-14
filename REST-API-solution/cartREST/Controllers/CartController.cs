@@ -56,16 +56,37 @@ namespace cartREST.Controllers
             }
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/values/email
+        [HttpPut("{email}")]
+        public ActionResult<List<ProductUpdate>> Put(string email)
         {
+            if(email.Equals(""))
+            {
+                return NotFound();
+            }
+            try
+            {
+                return Ok(SQL_Interface.Instance.PurchaseCart(email));
+            }
+            catch(Exception)
+            {
+                return NotFound();
+            }
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public ActionResult Delete(RemoveCartUpdate rcu)
         {
+            try
+            {
+                SQL_Interface.Instance.RemoveProduct(rcu.Email, rcu.ProductId);
+                return NoContent();
+            }
+            catch(Exception)
+            {
+                return NotFound();
+            }
         }
 
 

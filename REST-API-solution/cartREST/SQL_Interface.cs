@@ -131,8 +131,27 @@ namespace cartREST
             return updates;
 
         }
+        public void RemoveProduct(string email, int productID)
+        {
+            try
+            {
+            string query = "DELETE FROM cart WHERE user_id = (@user_id) AND product_id = (@product_id);";
+            MySqlCommand command = m_dbConnection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
+            command.Parameters.Add("@product_id", MySqlDbType.Int32).Value = productID;
 
-
+            int rows_affected = command.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                Console.Out.WriteLine("\n\n**********************************************************************");
+                Console.Out.WriteLine(e.Message);
+                Console.Out.WriteLine(e.InnerException);
+                Console.Out.WriteLine(e.Source);
+                Console.Out.WriteLine("**********************************************************************\n\n");
+            }
+        }
         //*****************************************************************************************
 
         //public List<Product> GetProducts()
