@@ -21,7 +21,8 @@ namespace REST_lib
         //********************************************************************************
         public CartUpdate()
         {
-
+            this.Email = "";
+            this.productUpdate = new ProductUpdate();
         }
         public CartUpdate(string email, ProductUpdate productUpdate)
         {

@@ -30,7 +30,7 @@ namespace REST_lib
         //********************************************************************************
         public Cart()
         {
-
+            this.Email = "";
         }
 
         public Cart(string Email, List<KeyValuePair<Int32, Int32>> ShoppingCart)
