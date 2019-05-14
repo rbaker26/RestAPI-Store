@@ -17,6 +17,9 @@ namespace REST_API_solution
         {
 			Messenger.CreateInstance("Products", makeVerbose: true);
 
+			// TODO Now that this is simpler, I highly suggest pulling it in here or just turning this into a static function.
+			productsREST.Receive r = new productsREST.Receive();
+
 			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();
@@ -33,3 +36,4 @@ namespace REST_API_solution
                 .UseUrls("http://localhost:5000", "http://*:5000");
     }
 }
+

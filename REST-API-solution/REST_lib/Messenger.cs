@@ -87,9 +87,7 @@ namespace REST_lib {
 		private Messenger(string namePostfix, bool makeVerbose) {
 			Verbose = makeVerbose;
 
-			WriteDebugMessage("Setting up Pubnub.");
-
-			Verbose = false;
+			WriteDebugMessage("Setting up Pubnub...");
 
 			// NOTE: If we ever want to make this repo publich, we should load these into a secrets file or something.
 			PNConfiguration config = new PNConfiguration();
@@ -101,6 +99,8 @@ namespace REST_lib {
 			config.Uuid = GetDefaultMacAddress() + namePostfix;
 
 			pn = new Pubnub(config);
+
+			WriteDebugMessage("Done setting up Pubnub. Using uuid of " + config.Uuid); 
 		}
 
 		public static void DisposeInstance() {

@@ -1,51 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Runtime.Serialization;
 
 namespace REST_lib
 {
-    [DataContract]
-    public class Product
+    public class CartUpdate
     {
 
         //********************************************************************************
         // Data Properties
         //********************************************************************************
-        [DataMember]
-        public int ProductId { get; set; }
-
-        [DataMember]
-        public string Description { get; set; }
-
-        [DataMember]
-        public int Quantity { get; set; }
-
-        [DataMember]
-        public float Price { get; set; }
+        public string Email
+        { get; set; }
+        public ProductUpdate productUpdate {get; set;}
         //********************************************************************************
 
 
         //********************************************************************************
         // Constructors
         //********************************************************************************
-        public Product(int ProductId, string Description, int Quantity, float Price)
+        public CartUpdate()
         {
-            this.ProductId = ProductId;
-            this.Description = Description;
-            this.Quantity = Quantity;
-            this.Price = Price;
+            this.Email = "";
+            this.productUpdate = new ProductUpdate();
         }
-
-        public Product()
+        public CartUpdate(string email, ProductUpdate productUpdate)
         {
-            this.ProductId = 0;
-            this.Description = null;
-            this.Quantity = 0;
-            this.Price = 0;
+            this.Email = email;
+            this.productUpdate = productUpdate;
         }
         //********************************************************************************
-
 
 
         //********************************************************************************
@@ -54,26 +38,24 @@ namespace REST_lib
         //********************************************************************************
         public override bool Equals(object obj)
         {
-            if(obj == null)
+            if (obj == null)
                 return false;
             if (obj.GetType() != this.GetType())
                 return false;
 
-            Product temp = (Product)obj;
-            return (this.ProductId == temp.ProductId && this.Description == temp.Description &&
-                    this.Quantity == temp.Quantity   && this.Price == temp.Price);
+            CartUpdate temp = (CartUpdate)obj;
+            return (this.Email == temp.Email && 
+                this.productUpdate.ProductId == temp.productUpdate.ProductId && 
+                this.productUpdate.QuantityToBeRemoved == temp.productUpdate.QuantityToBeRemoved );
         }
-
         public override int GetHashCode()
         {
             unchecked
             {
-                int hash = 17 + Quantity + ProductId;
+                int hash = 17 + this.productUpdate.ProductId + this.productUpdate.QuantityToBeRemoved;
                 // Suitable nullity checks etc, of course :)
-                hash = hash * 23 + ProductId.GetHashCode();
-                hash = hash * 23 + Description.GetHashCode();
-                hash = hash * 23 + Quantity.GetHashCode();
-                hash = hash * 23 + Price.GetHashCode();
+                hash = hash * 23 + this.productUpdate.ProductId.GetHashCode();
+                hash = hash * 23 + this.productUpdate.QuantityToBeRemoved.GetHashCode();
                 hash = hash * 23 + this.ToString().GetHashCode();
                 return hash;
             }
@@ -81,11 +63,9 @@ namespace REST_lib
 
         public override string ToString()
         {
-            return "ID:\t" + ProductId + "\tDescription:\t" + Description
-                + "\tQuantity:\t" + Quantity + "\tPrice:\t" + Price;
+            return "User ID:\t" + Email + "\tProduct ID:\t" + this.productUpdate.ProductId + "\tQuantity:\t" + this.productUpdate.QuantityToBeRemoved;
         }
         #endregion
         //********************************************************************************
-
     }
 }
