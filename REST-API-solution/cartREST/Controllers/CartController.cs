@@ -21,24 +21,32 @@ namespace cartREST.Controllers
             return NoContent();
         }
 
-        // GET api/values/5
+        // GET api/values/email
         [HttpGet("{email}")]
         public ActionResult<IEnumerable<ProductUpdate>> Get(string email)
         {
-            return SQL_Interface.Instance.PurchaseCart(email);
+            if (email.Equals(""))
+                return NotFound();
+            try
+            {
+                if (email.Equals(""))
+                    throw new Exception();
+                return SQL_Interface.Instance.PurchaseCart(email);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         // POST api/values
         [HttpPost]
         public ActionResult<CartUpdate> Post([FromBody] CartUpdate cartUpdate)
         {
-            //Console.Out.WriteLine("********************************************");
-            //Console.Out.WriteLine(cartUpdate);
-            //Console.Out.WriteLine("********************************************");
+            if (cartUpdate.Email.Equals(""))
+                return NotFound();
             try
             {
-                if (cartUpdate.Email.Equals(""))
-                    throw new Exception();
                 SQL_Interface.Instance.AddProductToCart(cartUpdate.Email, cartUpdate.productUpdate);
                 return CreatedAtAction(nameof(Get), new { email = cartUpdate.Email }, cartUpdate);
             }
@@ -61,5 +69,5 @@ namespace cartREST.Controllers
         }
 
 
-	}
+    }
 }
