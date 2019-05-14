@@ -123,7 +123,7 @@ namespace REST_lib {
 		private Messenger() {
 			Console.Out.WriteLine("Booting up RabbitMQ.");
 
-			ConnectionFactory factory = new ConnectionFactory() { HostName = "localhost" };
+			ConnectionFactory factory = new ConnectionFactory() { HostName = "68.5.123.182" };
 			Connection = factory.CreateConnection();
 			Channel = Connection.CreateModel();
 		}
