@@ -29,7 +29,12 @@ namespace cartREST.Controllers
             {
                 if (email.Equals(""))
                     throw new Exception();
-                return SQL_Interface.Instance.PurchaseCart(email);
+                List<ProductUpdate> list = SQL_Interface.Instance.PurchaseCart(email);
+
+                // Publish messgae to pubnub
+                Messenger.Instance.SendMessage(new CartUpdate(email, list),Messenger.MessageType.NewOrders);
+
+                return list;
             }
             catch (Exception)
             {

@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace REST_lib
 {
+    [DataContract]
     public class CartUpdate
     {
 
         //********************************************************************************
         // Data Properties
         //********************************************************************************
-        public string Email
-        { get; set; }
-        public ProductUpdate productUpdate {get; set;}
+        [DataMember]
+        public string Email { get; set; }
+        [DataMember]
+        public List<ProductUpdate> productUpdate {get; set;}
         //********************************************************************************
 
 
@@ -22,12 +25,12 @@ namespace REST_lib
         public CartUpdate()
         {
             this.Email = "";
-            this.productUpdate = new ProductUpdate();
+            this.productUpdate = new List<ProductUpdate>();
         }
-        public CartUpdate(string email, ProductUpdate productUpdate)
+        public CartUpdate(string email, List<ProductUpdate> productUpdates)
         {
             this.Email = email;
-            this.productUpdate = productUpdate;
+            this.productUpdate = productUpdates;
         }
         //********************************************************************************
 
