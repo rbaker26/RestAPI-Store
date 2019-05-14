@@ -18,30 +18,42 @@ namespace cartREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<CartUpdate>> Get()
         {
-            List<CartUpdate> l = new List<CartUpdate>();
-            CartUpdate cu = new CartUpdate("bobby@gmail.com", new ProductUpdate(22, 645));
-            l.Add(cu);
-            // Console.Out.WriteLine(cu);
-            // string json = JsonConverter.ToJson(cu);
-            return l;
+            return NoContent();
         }
 
-        // GET api/values/5
+        // GET api/values/email
         [HttpGet("{email}")]
         public ActionResult<IEnumerable<ProductUpdate>> Get(string email)
         {
-            return SQL_Interface.Instance.PurchaseCart(email);
+            if (email.Equals(""))
+                return NotFound();
+            try
+            {
+                if (email.Equals(""))
+                    throw new Exception();
+                return SQL_Interface.Instance.PurchaseCart(email);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] CartUpdate cartUpdate)
+        public ActionResult<CartUpdate> Post([FromBody] CartUpdate cartUpdate)
         {
-            //Console.Out.WriteLine("********************************************");
-            //Console.Out.WriteLine(value);
-            //Console.Out.WriteLine("********************************************");
-
-            SQL_Interface.Instance.AddProductToCart(cartUpdate.Email, cartUpdate.productUpdate);
+            if (cartUpdate.Email.Equals(""))
+                return NotFound();
+            try
+            {
+                SQL_Interface.Instance.AddProductToCart(cartUpdate.Email, cartUpdate.productUpdate);
+                return CreatedAtAction(nameof(Get), new { email = cartUpdate.Email }, cartUpdate);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         // PUT api/values/5
@@ -57,5 +69,5 @@ namespace cartREST.Controllers
         }
 
 
-	}
+    }
 }

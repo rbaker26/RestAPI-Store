@@ -404,4 +404,5 @@ hs_err_pid*
 
 **/.gradle/
 **/.idea/
+./idea/
 **/out/
