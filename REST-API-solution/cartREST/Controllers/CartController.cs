@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using cartREST;
+using REST_lib;
 
 namespace cartREST.Controllers
 {
@@ -14,9 +16,9 @@ namespace cartREST.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<ProductUpdate>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return SQL_Interface.Instance.PurchaseCart("keeneisgay@gmail.com");
         }
 
         // GET api/values/5
