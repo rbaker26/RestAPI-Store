@@ -9,13 +9,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using REST_lib;
 
-namespace REST_API_solution
+
+namespace ProductsREST
 {
     public class Program
     {
         public static void Main(string[] args)
         {
 			Messenger.CreateInstance("Products", makeVerbose: true);
+            Messenger.Instance.SetupListener<List<ProductUpdate>>((List<ProductUpdate> updates)=>{
+                foreach(ProductUpdate productUpdate in updates)
+                {
+                    SQL_Interface.Instance.ReduceItemQuantity(productUpdate);
+
+                }
+            },
+                Messenger.MessageType.ProductUpdates);
 
 			// TODO Now that this is simpler, I highly suggest pulling it in here or just turning this into a static function.
 			productsREST.Receive r = new productsREST.Receive();

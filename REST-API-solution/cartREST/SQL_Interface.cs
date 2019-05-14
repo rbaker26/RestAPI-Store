@@ -78,7 +78,7 @@ namespace cartREST
         }
 
 
-        public List<ProductUpdate> PurchaseCart(string email)
+        public Cart PurchaseCart(string email)
         {
             MySqlDataReader mysql_datareader;
             List<ProductUpdate> updates = new List<ProductUpdate>();
@@ -128,7 +128,7 @@ namespace cartREST
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
 
-            return updates;
+            return new Cart(email, updates);
 
         }
         public void RemoveProduct(string email, int productID)

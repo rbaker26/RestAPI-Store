@@ -21,7 +21,7 @@ namespace cartREST.Controllers
 
         // GET api/values/email
         [HttpGet("{email}")]
-        public ActionResult<IEnumerable<ProductUpdate>> Get(string email)
+        public ActionResult<Cart> Get(string email)
         {
             if (email.Equals(""))
                 return NotFound();
@@ -29,7 +29,17 @@ namespace cartREST.Controllers
             {
                 if (email.Equals(""))
                     throw new Exception();
-                return SQL_Interface.Instance.PurchaseCart(email);
+
+                // Set Items to cart items to purchased and return a cart (email, List<productUpdates>)
+                Cart cart = SQL_Interface.Instance.PurchaseCart(email);
+
+                // Send the Cart to Orders via PubNub
+                Messenger.Instance.SendMessage(cart, Messenger.MessageType.NewOrders);
+
+                // Send Quantity Updates to Products Inventory Service
+                Messenger.Instance.SendMessage(cart.ShoppingCart, Messenger.MessageType.ProductUpdates);
+
+                return cart;
             }
             catch (Exception)
             {

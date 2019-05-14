@@ -17,7 +17,6 @@ namespace cartREST
 
 			Messenger.CreateInstance("Cart", makeVerbose: true);
 
-
 			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();

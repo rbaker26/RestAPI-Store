@@ -15,15 +15,18 @@ namespace ordersREST
     {
         public static void Main(string[] args)
         {
-			Messenger.CreateInstance("Orders", makeVerbose: true);
-			/*
-			Messenger.Instance.SetupListener<Product>(
-				(Product p) => { Console.Out.WriteLine("PRINTING: " + p.ToString()); },
-				Messenger.MessageType.ProductUpdates
-			);
-			*/
 
-			try {
+            // Listen for Carts published on the newOrders channel.
+            // Send this cart to the database.
+			Messenger.CreateInstance("Orders", makeVerbose: true);
+            Messenger.Instance.SetupListener<Cart>((Cart c) => {
+                Console.Out.WriteLine(c);
+                SQL_Interface.Instance.AddNewOrder(c.Email, c.ShoppingCart);
+            }, Messenger.MessageType.NewOrders);
+
+
+            // Setup WebServer
+            try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();
 				host.WaitForShutdown();
