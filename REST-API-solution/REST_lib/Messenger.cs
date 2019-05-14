@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Text;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+using PubnubApi;
 
 namespace REST_lib {
 	/// <summary>
@@ -11,6 +12,8 @@ namespace REST_lib {
 	/// Relies on a RabbitMQ server.
 	/// </summary>
 	public class Messenger : IDisposable {
+
+		Pubnub pn;
 
 		/// <summary>
 		/// Get the instance of the messaging object. It is created if it does not
@@ -40,16 +43,6 @@ namespace REST_lib {
 		}
 
 		/// <summary>
-		/// The connection object. This will stay up until the program closes.
-		/// </summary>
-		public IConnection Connection { get; private set; }
-
-		/// <summary>
-		/// The channel object. This will stay up until the program closes.
-		/// </summary>
-		public IModel Channel { get; private set; }
-
-		/// <summary>
 		/// Sends a message using the given exchange.
 		/// </summary>
 		/// <typeparam name="T">Type of the message object.</typeparam>
@@ -57,75 +50,72 @@ namespace REST_lib {
 		/// <param name="mType">The type of message.</param>
 		public void SendMessage<T>(T msg, MessageType mType) {
 
-			string exchangeName = ExchangeDeclare(mType);
+			//string jsonMsg = JsonConverter.ToJson(msg);
 
-			string jsonMsg = JsonConverter.ToJson(msg);
-
-			/*
-			Console.Out.WriteLine(jsonMsg);
-			Console.Out.Flush();
-			*/
-
-			byte[] byteMsg = Encoding.UTF8.GetBytes(jsonMsg);
-			Channel.BasicPublish(
-				exchange: exchangeName,
-				routingKey: "",
-				basicProperties: null,
-				body: byteMsg
-			);
+			pn.Publish()
+				.Channel(mType.ToString())
+				.Message(msg)
+				.Async(new PNPublishResultExt((publishResult, publishStatus) => {
+					if(!publishStatus.Error) {
+						//Debug.WriteLine(string.Format("DateTime {0}, In Publish Example, Timetoken: {1}", DateTime.UtcNow, publishResult.Timetoken));
+					}
+					else {
+						Console.Out.WriteLine(publishStatus.Error);
+						Console.Out.WriteLine(publishStatus.ErrorData.Information);
+					}
+			}));
 		}
 
-		/// <summary>
-		/// Configures the exchange in a consistent way and then returns the exchange name.
-		///
-		/// Please use this instead of manually declaring the exchange. All of our microservices
-		/// MUST use the same exchange declarations or RabbitMQ will compplain. If you need a new
-		/// exchange, please define it in MessageType and change this code.
-		/// </summary>
-		/// <param name="mType">The type of exchange.</param>
-		/// <exception cref="ArgumentOutOfRangeException">Thrown if recieving an unkown message type.</exception>
-		/// <returns>The name of the exchange.</returns>
-		public string ExchangeDeclare(MessageType mType) {
-			string exchangeName = mType.ToString();
+		public void SetupListener<T>(Action<T> consumer, MessageType mType) {
+			string channel = mType.ToString();
 
-			switch(mType) {
-				case MessageType.ProductUpdates:
-				case MessageType.NewOrders:
-					Channel.ExchangeDeclare(exchange: exchangeName, type: "fanout");
-					break;
-				default:
-					throw new ArgumentOutOfRangeException("Cannot declare unhandled exchange type of " + exchangeName);
-			}
+			GenericPubnubListener<T> listener = new GenericPubnubListener<T> { callback = consumer, sourceChannel = channel };
 
-			return exchangeName;
+			pn.AddListener(listener);
+			pn.Subscribe<string>()
+				.Channels(new string[] { channel })
+				.Execute();
 		}
 
 		#region Instance management
 
-		/// <summary>
-		/// Create an instance of our singleton.
-		/// </summary>
-		static Messenger() {
-			Instance = new Messenger();
+		public static void CreateInstance(string namePostfix) {
+			Instance = new Messenger(namePostfix);
 		}
 
-		/// <summary>
-		/// Was used to force the message instance to exist (for testing purposes).
-		/// It should not be used outside of testing.
-		/// </summary>
-		[Obsolete]
-		public void ForceAwake() {
+		private static string GetDefaultMacAddress() {
+			Dictionary<string, long> macAddresses = new Dictionary<string, long>();
+			foreach(NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
+				if(nic.OperationalStatus == OperationalStatus.Up)
+					macAddresses[nic.GetPhysicalAddress().ToString()] = nic.GetIPStatistics().BytesSent + nic.GetIPStatistics().BytesReceived;
+			}
+			long maxValue = 0;
+			string mac = "";
+			foreach(KeyValuePair<string, long> pair in macAddresses) {
+				if(pair.Value > maxValue) {
+					mac = pair.Key;
+					maxValue = pair.Value;
+				}
+			}
+			return mac;
 		}
 
 		/// <summary>
 		/// Set up our connection to the RabbitMQ server and open a channel.
 		/// </summary>
-		private Messenger() {
-			Console.Out.WriteLine("Setting up RabbitMQ.");
+		private Messenger(string namePostfix) {
+			Console.Out.WriteLine("Setting up Pubnub.");
 
-			ConnectionFactory factory = new ConnectionFactory() { HostName = "localhost" };
-			Connection = factory.CreateConnection();
-			Channel = Connection.CreateModel();
+			// NOTE: If we ever want to make this repo publich, we should load these into a secrets file or something.
+			PNConfiguration config = new PNConfiguration();
+			config.SubscribeKey = "sub-c-f05db650-75d6-11e9-90ac-5a6b801e0231";
+			config.PublishKey = "pub-c-13ae4878-f71b-4ce9-8b04-a79dc76d5f7f";
+			//config.SecretKey = "my_secretkey";
+			config.LogVerbosity = PNLogVerbosity.BODY;
+			//config.Uuid = "PubNubCSharpExample";
+			config.Uuid = GetDefaultMacAddress() + namePostfix;
+
+			pn = new Pubnub(config);
 		}
 
 		/// <summary>
@@ -135,10 +125,9 @@ namespace REST_lib {
 		protected virtual void Dispose(bool disposing) {
 
 			if(disposing) {
-				//Console.Out.WriteLine("Blah");
+				Console.Out.WriteLine("Destroying up Pubnub");
 
-				Channel?.Close();
-				Connection?.Close();
+				pn.Destroy();
 			}
 		}
 
