@@ -15,13 +15,22 @@ namespace ordersREST
     {
         public static void Main(string[] args)
         {
-			Messenger.CreateInstance("Orders");
+			Messenger.CreateInstance("Orders", makeVerbose: true);
+			/*
 			Messenger.Instance.SetupListener<Product>(
-				(Product p) => { Console.Out.WriteLine(p.ToString()); },
+				(Product p) => { Console.Out.WriteLine("PRINTING: " + p.ToString()); },
 				Messenger.MessageType.ProductUpdates
 			);
+			*/
 
-            CreateWebHostBuilder(args).Build().Run();
+			try {
+				IWebHost host = CreateWebHostBuilder(args).Build();
+				host.RunAsync();
+				host.WaitForShutdown();
+			}
+			finally {
+				Messenger.DisposeInstance();
+			}
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

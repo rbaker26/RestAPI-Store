@@ -11,22 +11,25 @@ namespace REST_lib
     public class Order
     {
 
-        //********************************************************************************
-        // Data Properties
-        //********************************************************************************
-        public int OrderID { get; set; }
+		//********************************************************************************
+		// Data Properties
+		//********************************************************************************
+		[DataMember]
+		public int OrderID { get; set; }
+		[DataMember]
         public string Email { get; set; }
 
         /// <summary>
         /// In millisecords
         /// </summary>
+		[DataMember]
         public long TimeStamp { get; set; }
 
         /// <summary>
         /// <ProductID, QuantityPurchased>
         /// This way the client cannot change things like the price of quantity on hand
         /// </summary>
-        public List<KeyValuePair<Int32, Int32>> ShoppingCart { get; set; }
+        public List<KeyValuePair<int, int>> ShoppingCart { get; set; }
         //********************************************************************************
 
 
