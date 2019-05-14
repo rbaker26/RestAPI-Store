@@ -16,9 +16,14 @@ namespace cartREST.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<ProductUpdate>> Get()
+        public ActionResult<IEnumerable<CartUpdate>> Get()
         {
-            return null;
+            List<CartUpdate> l = new List<CartUpdate>();
+            CartUpdate cu = new CartUpdate("bobby@gmail.com", new ProductUpdate(22, 645));
+            l.Add(cu);
+            // Console.Out.WriteLine(cu);
+            // string json = JsonConverter.ToJson(cu);
+            return l;
         }
 
         // GET api/values/5
@@ -30,9 +35,13 @@ namespace cartREST.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] CartUpdate cartUpdate)
         {
+            //Console.Out.WriteLine("********************************************");
+            //Console.Out.WriteLine(value);
+            //Console.Out.WriteLine("********************************************");
 
+            SQL_Interface.Instance.AddProductToCart(cartUpdate.Email, cartUpdate.productUpdate);
         }
 
         // PUT api/values/5
