@@ -14,13 +14,14 @@ namespace ordersREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return NoContent();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<string> Get(string email)
         {
+
             return "value";
         }
 
@@ -28,6 +29,7 @@ namespace ordersREST.Controllers
         [HttpPost]
         public void Post([FromBody] string value)
         {
+
         }
 
         // PUT api/values/5
