@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 using REST_lib;
 
-namespace ProductsREST
+namespace ordersREST
 {
     public sealed class SQL_Interface
     {
@@ -27,7 +27,7 @@ namespace ProductsREST
         {
             // SQLiteConnection.CreateFile("MyDatabase.sqlite");
             // this.m_dbConnection = new SQLiteConnection("Data Source=C:\\Users\\007ds\\Documents\\GitHub\\RestAPI-Store\\ProductsREST\\ProductsREST\\products.db;Version=3;");
-            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=ordersREST-db; UID=recorder; password=recorder0");
+            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=ordersREST_db; UID=recorder; password=recorder0");
             m_dbConnection.Open();
         }
         //*****************************************************************************************
@@ -102,54 +102,81 @@ namespace ProductsREST
             return orders;
         }
 
-        //public Product GetProductById(int productId)
-        //{
-        //    Product temp = new Product();
-        //    //products.Add(new Product(1, "Hi", 55, 128.20f));
-        //
-        //    // SQLiteDataReader sqlite_datareader;
-        //    MySqlDataReader mysql_datareader;
-        //    try
-        //    {
-        //        string query = "SELECT product_id, description, quantity, price FROM products WHERE product_id = (@id)";
-        //        //string query = "SELECT * FROM products";
-        //        // SQLiteCommand command = m_dbConnection.CreateCommand();
-        //        MySqlCommand command = m_dbConnection.CreateCommand();
-        //        command.CommandText = query;
-        //        command.Parameters.Add("@id", MySqlDbType.Int32).Value = productId;
-        //
-        //        mysql_datareader = command.ExecuteReader();
-        //
-        //        while (mysql_datareader.Read())
-        //        {
-        //            temp.ProductId = mysql_datareader.GetInt32(0);
-        //            temp.Description = mysql_datareader.GetString(1);
-        //            temp.Quantity = mysql_datareader.GetInt32(2);
-        //            temp.Price = mysql_datareader.GetFloat(3);
-        //
-        //
-        //            //*************************
-        //            //* Debug Code            *
-        //            //*************************
-        //            //Console.WriteLine("\n\n\n\n****************************************************************************");
-        //            //Console.WriteLine(temp);
-        //            //*************************
-        //
-        //        }
-        //        mysql_datareader.Close();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.Out.WriteLine("\n\n**********************************************************************");
-        //        Console.Out.WriteLine(e.Message);
-        //        Console.Out.WriteLine(e.InnerException);
-        //        Console.Out.WriteLine(e.Source);
-        //        Console.Out.WriteLine("**********************************************************************\n\n");
-        //    }
-        //
-        //
-        //    return temp;
-        //}
+        public void AddNewOrder(string email, List<ProductUpdate> orderList)
+        {
+            try
+            {
+                //string query = "SELECT * FROM products";
+                // SQLiteCommand command = m_dbConnection.CreateCommand();
+                using (MySqlTransaction trans = m_dbConnection.BeginTransaction())
+                {
+                    MySqlCommand command1 = m_dbConnection.CreateCommand();
+
+                    // Inset into `orders` table
+                    string query1 = "INSERT INTO orders (user_id) VALUES ( (@email) );";
+                    command1.CommandText = query1;
+                    command1.Parameters.Add("@email", MySqlDbType.String).Value = email;
+
+                    int rows_affected = command1.ExecuteNonQuery();
+
+
+                    // Get new order_id from the above query
+                    MySqlCommand command2 = m_dbConnection.CreateCommand();
+                    string query2 = "SELECT order_id FROM orders WHERE user_id = (@email) ORDER BY order_id DESC limit 1;";
+                    command2.CommandText = query2;
+                    command2.Parameters.Add("@email", MySqlDbType.String).Value = email;
+                    MySqlDataReader mysql_datareader;
+
+                    mysql_datareader = command2.ExecuteReader();
+                    int orderId = -1;
+                    while (mysql_datareader.Read())
+                    {
+                        orderId = mysql_datareader.GetInt32(0);
+                    }
+                    mysql_datareader.Close();
+
+
+                    // Insert the list of product updates into the `orders_list` tables
+                    MySqlCommand command3 = m_dbConnection.CreateCommand();
+                    string query3 = "INSERT INTO orders_list (order_id, product_id, quantity) VALUES ( (@orderID), (@productID), (@quantity) );";
+                    command3.CommandText = query3;
+
+                    // ya i know, shut up
+                    bool first = true;
+                    foreach(ProductUpdate productUpdate in orderList)
+                    {
+                        if(first)
+                        {
+                            command3.Parameters.Add("@orderID", MySqlDbType.Int32).Value = orderId;
+                            command3.Parameters.Add("@productID", MySqlDbType.Int32).Value = productUpdate.ProductId;
+                            command3.Parameters.Add("@quantity", MySqlDbType.Int32).Value = productUpdate.QuantityToBeRemoved;
+                            first = false;
+                        }
+                        else
+                        {
+                            command3.Parameters["@orderID"].Value = orderId;
+                            command3.Parameters["@productID"].Value = productUpdate.ProductId; 
+                            command3.Parameters["@quantity"].Value = productUpdate.QuantityToBeRemoved; 
+                        }
+                        
+                        int row_affected = command3.ExecuteNonQuery();
+                    }
+                    
+
+                    trans.Commit();
+                }
+            }
+            catch (Exception e)
+            { 
+                Console.Out.WriteLine("\n\n**********************************************************************");
+                Console.Out.WriteLine(e.Message);
+                Console.Out.WriteLine(e.InnerException);
+                Console.Out.WriteLine(e.Source);
+                Console.Out.WriteLine("**********************************************************************\n\n");
+
+            }
+
+        }
 
 
     }

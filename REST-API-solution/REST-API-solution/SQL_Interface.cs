@@ -12,6 +12,7 @@ namespace ProductsREST
 {
     public sealed class SQL_Interface
     {
+        #region sql config region
         //*****************************************************************************************
         private static MySqlConnection m_dbConnection = null;
 
@@ -27,7 +28,7 @@ namespace ProductsREST
         {
             // SQLiteConnection.CreateFile("MyDatabase.sqlite");
             // this.m_dbConnection = new SQLiteConnection("Data Source=C:\\Users\\007ds\\Documents\\GitHub\\RestAPI-Store\\ProductsREST\\ProductsREST\\products.db;Version=3;");
-            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=productsREST_db; UID=recorder; password=recorder0");
+            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=ordersREST_db; UID=recorder; password=recorder0");
             m_dbConnection.Open();
         }
         //*****************************************************************************************
@@ -46,6 +47,7 @@ namespace ProductsREST
             }
 
         }
+        #endregion
         //*****************************************************************************************
 
         public List<Product> GetProducts()
