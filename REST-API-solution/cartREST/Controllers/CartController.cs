@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using cartREST;
 using REST_lib;
 

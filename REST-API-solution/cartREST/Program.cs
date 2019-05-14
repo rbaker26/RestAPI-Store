@@ -15,8 +15,8 @@ namespace cartREST
 	public class Program {
 		public static void Main(string[] args) {
 
-			//Product p = new Product(20, "Description here", 23, 4.99f);
-			//Messenger.Instance.SendMessage(p, Messenger.MessageType.NewOrders);
+			Messenger.CreateInstance("Cart", makeVerbose: true);
+
 
 			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
@@ -24,7 +24,7 @@ namespace cartREST
 				host.WaitForShutdown();
 			}
 			finally {
-				Messenger.Instance.Dispose();
+				Messenger.DisposeInstance();
 			}
 		}
 

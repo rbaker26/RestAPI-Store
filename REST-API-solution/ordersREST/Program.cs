@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using REST_lib;
 
 namespace ordersREST
 {
@@ -14,15 +15,23 @@ namespace ordersREST
     {
         public static void Main(string[] args)
         {
+			Messenger.CreateInstance("Orders", makeVerbose: true);
+			/*
+			Messenger.Instance.SetupListener<Product>(
+				(Product p) => { Console.Out.WriteLine("PRINTING: " + p.ToString()); },
+				Messenger.MessageType.ProductUpdates
+			);
+			*/
+
 			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();
 				host.WaitForShutdown();
 			}
 			finally {
-				REST_lib.Messenger.Instance.Dispose();
+				Messenger.DisposeInstance();
 			}
-		}
+        }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)

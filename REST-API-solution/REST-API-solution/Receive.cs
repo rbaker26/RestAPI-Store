@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProductsREST;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using REST_lib;
 
 namespace productsREST
@@ -17,8 +15,13 @@ namespace productsREST
     {
         public Receive()
         {
-            // In the tutorials, the exchange is set up manually.
-            // To keep things synced across programs, I made Messenger handle this part.
+			Messenger.Instance.SetupListener(
+				(ProductUpdate update) => { SQL_Interface.Instance.ReduceItemQuantity(update); },
+				Messenger.MessageType.ProductUpdates
+			);
+
+
+			/*
             string exchangeName = Messenger.Instance.ExchangeDeclare(Messenger.MessageType.ProductUpdates);
 
             string queueName = Messenger.Instance.Channel.QueueDeclare().QueueName;
@@ -43,7 +46,7 @@ namespace productsREST
 
 
                     // Send to server
-                    SQL_Interface.Instance.ReduceItemQuantity(productUpdate);
+                    
                 }
                 catch(Exception e)
                 {
@@ -62,6 +65,7 @@ namespace productsREST
                 queue: queueName,
                 autoAck: true,
                 consumer: consumer);
+			*/
 
 
 
@@ -69,30 +73,29 @@ namespace productsREST
 
 
 
-
-            //var exchange = REST_lib.Messenger.Instance.ExchangeDeclare(Messenger.MessageType.ProductUpdates);
-
-
-            //var factory = new ConnectionFactory() { HostName = "localhost" };
-            //using (var connection = factory.CreateConnection())
-            //using (var channel = connection.CreateModel())
-            //{
-            //    //channel.ExchangeDeclare(exchange: "logs", type: "fanout");
-
-            //    var message = GetMessage(args);
-            //    var body = Encoding.UTF8.GetBytes(message);
-            //    channel.BasicPublish(exchange: "logs",
-            //                         routingKey: "",
-            //                         basicProperties: null,
-            //                         body: body);
-            //    Console.WriteLine(" [x] Sent {0}", message);
-            //}
-
-            //Console.WriteLine(" Press [enter] to exit.");
-            //Console.ReadLine();
-
-        }
+			//var exchange = REST_lib.Messenger.Instance.ExchangeDeclare(Messenger.MessageType.ProductUpdates);
 
 
-    }
+			//var factory = new ConnectionFactory() { HostName = "localhost" };
+			//using (var connection = factory.CreateConnection())
+			//using (var channel = connection.CreateModel())
+			//{
+			//    //channel.ExchangeDeclare(exchange: "logs", type: "fanout");
+
+			//    var message = GetMessage(args);
+			//    var body = Encoding.UTF8.GetBytes(message);
+			//    channel.BasicPublish(exchange: "logs",
+			//                         routingKey: "",
+			//                         basicProperties: null,
+			//                         body: body);
+			//    Console.WriteLine(" [x] Sent {0}", message);
+			//}
+
+			//Console.WriteLine(" Press [enter] to exit.");
+			//Console.ReadLine();
+
+		}
+
+
+	}
 }

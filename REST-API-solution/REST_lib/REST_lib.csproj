@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.16" />
-    <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
+    <PackageReference Include="PubnubPCL" Version="4.0.29" />
   </ItemGroup>
 
 </Project>
