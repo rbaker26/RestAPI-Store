@@ -17,15 +17,15 @@ namespace ordersREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            List<ProductUpdate> list = new List<ProductUpdate>();
-            list.Add(new ProductUpdate(1, 11));
-            list.Add(new ProductUpdate(2, 22));
-            list.Add(new ProductUpdate(3, 33));
-            list.Add(new ProductUpdate(4, 44));
-            list.Add(new ProductUpdate(5, 55));
-            list.Add(new ProductUpdate(6, 66));
+        //    List<ProductUpdate> list = new List<ProductUpdate>();
+        //    list.Add(new ProductUpdate(1, 11));
+        //    list.Add(new ProductUpdate(2, 22));
+        //    list.Add(new ProductUpdate(3, 33));
+        //    list.Add(new ProductUpdate(4, 44));
+        //    list.Add(new ProductUpdate(5, 55));
+        //    list.Add(new ProductUpdate(6, 66));
 
-            SQL_Interface.Instance.AddNewOrder("007dsi@gmail.com", list);
+        //    SQL_Interface.Instance.AddNewOrder("007dsi@gmail.com", list);
 
             return NoContent();
         }
@@ -34,8 +34,7 @@ namespace ordersREST.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(string email)
         {
-
-            return "value";
+            return NoContent();
         }
 
         // POST api/values

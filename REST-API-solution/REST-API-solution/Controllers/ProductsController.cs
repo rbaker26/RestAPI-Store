@@ -22,11 +22,6 @@ namespace ProductsREST.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Product>> Get()
         {
-            Console.Out.WriteLine("\n\n*******************************************");
-           Console.Out.WriteLine( JsonConverter.ToJson(new ProductUpdate(2, 20)));
-
-
-
             return SQL_Interface.Instance.GetProducts();
         }
 

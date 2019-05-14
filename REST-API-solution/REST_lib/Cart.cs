@@ -6,6 +6,10 @@ using System.Runtime.Serialization;
 
 namespace REST_lib
 {
+    /// <summary>
+    /// Cart contains the email and all the cart items.
+    /// CartUpdate just hold the email and one item.
+    /// </summary>
     [DataContract]
     public class Cart
     {
@@ -21,7 +25,7 @@ namespace REST_lib
         /// This way the client cannot change things like the price of quantity on hand
         /// </summary>
         [DataMember]
-        public List<KeyValuePair<Int32,Int32>> ShoppingCart { get; set; }
+        public List<ProductUpdate> ShoppingCart { get; set; }
         //********************************************************************************
 
 
@@ -33,7 +37,7 @@ namespace REST_lib
             this.Email = "";
         }
 
-        public Cart(string Email, List<KeyValuePair<Int32, Int32>> ShoppingCart)
+        public Cart(string Email, List<ProductUpdate> ShoppingCart)
         {
             this.Email = Email;
             this.ShoppingCart = ShoppingCart;
