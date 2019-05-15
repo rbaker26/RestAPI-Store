@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 final public class Converter {
+
     static private Gson gson;
 
     private Converter() {}

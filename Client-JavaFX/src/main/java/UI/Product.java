@@ -61,5 +61,14 @@ public class Product {
         this.Price = 0;
     }
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "ProductId=" + ProductId +
+                ", Description='" + Description + '\'' +
+                ", Quantity=" + Quantity +
+                ", Price=" + Price +
+                '}';
+    }
 }
 
