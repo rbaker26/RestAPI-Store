@@ -2,7 +2,9 @@ package UI;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import data.Gridclass;
 import data.ProductUpdate;
+import data.Product;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,8 +35,6 @@ public class LoginController extends AbstractSceneController {
     private double mouseX;
     private double mouseY;
 
-    TableView<Product> productInfoTableView;
-
     private String[] productArr = {};
 
     public LoginController() throws JSONException{
@@ -42,13 +42,16 @@ public class LoginController extends AbstractSceneController {
 
             ListView productList = new ListView();
 
-            productList.getItems().add("Item 1");
-
+        /**
+         * USING GSON FOR JSON STRING
+         */
         String jsonStr = "[{\"ProductId\":1,\"Description\":\"hammer\",\"Quantity\":46,\"Price\":4.5}," +
                 "{\"ProductId\":2,\"Description\":\"box\",\"Quantity\":2,\"Price\":99.89},{\"ProductId\":3," +
                 "\"Description\":\"C#\",\"Quantity\":3,\"Price\":50.0},{\"ProductId\":4,\"Description\":\"Java\"," +
                 "\"Quantity\":1,\"Price\":0.02}]";
+
         Gson gson = new Gson();
+
         Type collectionType = new TypeToken<ArrayList<Product>>(){}.getType();
         ArrayList<Product> productUpdate = gson.fromJson(jsonStr, collectionType);
         //ProductUpdate productUpdate = gson.fromJson(jsonStr, ProductUpdate.class);
@@ -57,7 +60,9 @@ public class LoginController extends AbstractSceneController {
         System.out.println("**********************************");
 
 
-
+        /**
+         * PRINTING OUT ALL THE NAMES OF PRODUCTS GIVEN
+         */
 
         for(int i = 0; i < productUpdate.size(); i++) {
             System.out.println(productUpdate.get(i).Description);
@@ -66,9 +71,13 @@ public class LoginController extends AbstractSceneController {
 
         }
 
+        System.out.println();
 
+
+        /**
+         * GRIDPANE DECLARATION FOR FIRST WINDOW
+         */
             GridPane grid = new GridPane();
-            GridPane desGrid = new GridPane();
 
             productList.setPrefSize(400, 400);
 
@@ -84,6 +93,9 @@ public class LoginController extends AbstractSceneController {
             emailField = new TextField();
             emailField.setPrefColumnCount(10);
 
+        /**
+         * POPOVER DECLARATION
+          */
             PopOver popUp = new PopOver();
 
             popUp.setTitle("Product Information");
@@ -94,48 +106,34 @@ public class LoginController extends AbstractSceneController {
             enterButton = new Button("Sign In");
 
 
+        /**
+         * AN ARRAY OF GRIDPANE AND GRIDPANE CONTENT IS CREATED.
+         * DEPENDANT ON THE SIZE AND CONTENT OF JSON STRING.
+          */
 
-            String value = "hello there dof\n" +
-                    "osjdofjddfsdfds\n" +
-                    "oifjdosifjosdij\n" +
-                    "isdjdfdsfdsfdsf\n" +
-                    "foijsdodsfdsfds";
+        Gridclass[] desgrid = new Gridclass[productUpdate.size()];
 
-            //Labels for JSon objects to get stored:
+        for(int i = 0; i < productUpdate.size(); i++) {
+            desgrid[i] = new Gridclass();
+            desgrid[i].setDescriptionObj(productUpdate.get(i).Description);
+            desgrid[i].setPriceObj(productUpdate.get(i).Price);
+            desgrid[i].setQuantityObj(productUpdate.get(i).Quantity);
+        }
 
+        /**
+         * THIS CONSOLE OUTPUT ALLOWS US TO SEE THAT THE CONTENT OF THE
+         * GRIDPANE AND SPECIFIC LABELS HAVE BEEN SUCCESSFULLY INITIALIZED
+         * WITH THE JSON STRING CONTENTS.
+         */
 
-
-            //testing purposes
-            //priceObj.setText("" + 2);
-           // quantityObj.setText("" + 33);
-
-          //  for(int i = 0 ; i < productUpdate.size(); i++) {
-           //     descriptionLabel.setText(String.valueOf(productUpdate.get(i)));
-
-          //  }
-
-
-            TableColumn<Product, String> product_idCol = new TableColumn<>("Product ID");
-            product_idCol.setMinWidth(150);
-            product_idCol.setCellValueFactory(new PropertyValueFactory<>("ProductId"));
-
-            TableColumn<Product, String> descriptionCol = new TableColumn<>("Description");
-            descriptionCol.setMinWidth(150);
-            descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
-
-            TableColumn<Product, String> quantityCol = new TableColumn<>("Quantity");
-            quantityCol.setMinWidth(150);
-            quantityCol.setCellValueFactory(new PropertyValueFactory<>("Quantity"));
-
-            TableColumn<Product, String> priceCol = new TableColumn<>("Price");
-            priceCol.setMinWidth(150);
-            priceCol.setCellValueFactory(new PropertyValueFactory<>("Price"));
-            productInfoTableView = new TableView<>();
-            productInfoTableView.getColumns().addAll(product_idCol, descriptionCol, quantityCol, priceCol);
+        for(int i = 0; i < productUpdate.size(); i++) {
+            System.out.println(desgrid[i].getDescriptionObj());
+            System.out.println(desgrid[i].getPriceObj());
+            System.out.println(desgrid[i].getQuantityObj());
+        }
 
 
-
-            popUp.setContentNode(desGrid);
+            //popUp.setContentNode(desGrid);
 
             ScrollPane scrollPane = new ScrollPane(productList);
 
@@ -150,9 +148,6 @@ public class LoginController extends AbstractSceneController {
             grid.add(scrollPane, 0, 5, 2, 5);
 
 
-//PROBLEM - select item in listview and popup should display out, but error is that the popOver does not point to the right
-            //row in listview which i can't figure out why the parameters in show function are the way they are.
-
             productList.setOnMouseMoved(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -161,27 +156,26 @@ public class LoginController extends AbstractSceneController {
                 }
             });
 
-            productList.getSelectionModel().selectedItemProperty().addListener(new InvalidationListener() {
-                @Override
-                public void invalidated(Observable observable) {
+            Label blankLabel = new Label("No content");
 
-                    popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
+         /** //PROBLEM: popOver shows up blank for every item clicked in the listView.***************
+         * //PROBLEM 2: WHEN USING THE SELECTION METHOD IN THE JAVA TEXT BOOK, PG. 650,
+          *             Integer i is suppose to be an Object i,
+          *             but interator for desgrid[] should be int or Integer.
+         * THIS METHOD SHOULD ALLOW US TO DISPLAY THE CONTENTS OF POPOVER
+         * WHICH CHANGES FOR DIFFERENT SELECTED ITEMS IN THE LIST VIEW.
+         */
 
-
-                   // for(Integer i: productList.getSelectionModel().getSelectedIndices()) {
-
-                  //  }
-
-                }
-            });
 
             productList.getSelectionModel().selectedItemProperty().addListener( ov -> {
 
                 popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
-               // for(Object i: productList()) {
-                     //desGrid.getChildren().add(productUpdate.get(i));
 
-               // }
+                popUp.setContentNode(blankLabel);
+
+                for(Object i: productList.getSelectionModel().getSelectedIndices()) {
+                    popUp.setContentNode(desgrid[(int) i]);
+                }
 
             });
 

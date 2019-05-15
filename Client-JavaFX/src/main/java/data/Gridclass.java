@@ -87,21 +87,22 @@ public class Gridclass extends GridPane {
         return quantityObj.getText();
     }
 
-    public void setDescriptionObj(Label description) {
+    public void setDescriptionObj(String description) {
 
-        this.descriptionObj = description;
-
-    }
-
-    public void setPriceObj(Label price) {
-
-        this.priceObj = price;
+        descriptionObj.setText(description);
 
     }
 
-    public void setQuantityObj(Label quantity) {
+    public void setPriceObj(float price) {
 
-        this.quantityObj = quantity;
+
+        priceObj.setText(String.valueOf(price));
+
+    }
+
+    public void setQuantityObj(int quantity) {
+
+        quantityObj.setText(String.valueOf(quantity));
 
     }
 

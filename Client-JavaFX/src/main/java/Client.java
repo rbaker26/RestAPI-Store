@@ -18,6 +18,8 @@ public class Client extends Application {
     private static final double initHeight = 600;
 
     private LoginController loginController;
+    private CartController cartController;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -37,7 +39,12 @@ public class Client extends Application {
         try {
             primaryStage.setTitle("SABRCATST RestAPI-Store");
 
+            primaryStage.setHeight(initHeight);
+            primaryStage.setWidth(initWidth);
+
             loginController = new LoginController();
+            cartController = new CartController();
+
 
             loginController.getEnterButton().setOnAction(value -> {
                 System.out.println("Entering with email...");
@@ -45,9 +52,7 @@ public class Client extends Application {
 
             // System.out.println("\n\n****************** IT WORKS ******************\n\n");
 
-            loginController.applyScene(primaryStage);
-            primaryStage.setWidth(initHeight);
-            primaryStage.setHeight(initHeight);
+            cartController.applyScene(primaryStage);
             primaryStage.show();
 
         } catch (Exception ex) {
