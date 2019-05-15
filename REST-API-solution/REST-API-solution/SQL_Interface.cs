@@ -28,7 +28,7 @@ namespace ProductsREST
         {
             // SQLiteConnection.CreateFile("MyDatabase.sqlite");
             // this.m_dbConnection = new SQLiteConnection("Data Source=C:\\Users\\007ds\\Documents\\GitHub\\RestAPI-Store\\ProductsREST\\ProductsREST\\products.db;Version=3;");
-            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=ordersREST_db; UID=recorder; password=recorder0");
+            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=productsREST_db; UID=recorder; password=recorder0");
             m_dbConnection.Open();
         }
         //*****************************************************************************************
@@ -81,8 +81,8 @@ namespace ProductsREST
                     //*************************
                     //* Debug Code            *
                     //*************************
-                    Console.WriteLine("\n\n\n\n****************************************************************************");
-                    Console.WriteLine(temp);
+                    //Console.WriteLine("\n\n\n\n****************************************************************************");
+                    //Console.WriteLine(temp);
                     //*************************
 
                     products.Add(temp);
@@ -97,7 +97,6 @@ namespace ProductsREST
                 Console.Out.WriteLine(e.InnerException);
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
-
             }
 
 
@@ -178,7 +177,7 @@ namespace ProductsREST
                 // Make sure the is enough inventory
                 if (orgQuantity < Quantity)
                 {
-                    throw new ArgumentException("Purchased qantity is greater than stored quantity", "Quantity");
+                   // throw new ArgumentException("Purchased qantity is greater than stored quantity", "Quantity");
                 }
 
 

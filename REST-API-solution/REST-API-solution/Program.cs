@@ -16,9 +16,10 @@ namespace ProductsREST
     {
         public static void Main(string[] args)
         {
-			Messenger.CreateInstance("Products", makeVerbose: true);
-            Messenger.Instance.SetupListener<List<ProductUpdate>>((List<ProductUpdate> updates)=>{
-                foreach(ProductUpdate productUpdate in updates)
+            Messenger.CreateInstance("Products", makeVerbose: true);
+            Messenger.Instance.SetupListener<List<ProductUpdate>>((List<ProductUpdate> updates) =>
+            {
+                foreach (ProductUpdate productUpdate in updates)
                 {
                     SQL_Interface.Instance.ReduceItemQuantity(productUpdate);
 
@@ -26,23 +27,27 @@ namespace ProductsREST
             },
                 Messenger.MessageType.ProductUpdates);
 
-			// TODO Now that this is simpler, I highly suggest pulling it in here or just turning this into a static function.
-			productsREST.Receive r = new productsREST.Receive();
-
-			try {
-				IWebHost host = CreateWebHostBuilder(args).Build();
-				host.RunAsync();
-				host.WaitForShutdown();
-			}
-			finally {
-				Messenger.DisposeInstance();
-			}
-		}
+            try
+            {
+                IWebHost host = CreateWebHostBuilder(args).Build();
+                host.RunAsync();
+                host.WaitForShutdown(); ;
+                
+            }
+            finally
+            {
+                Messenger.DisposeInstance();
+            }
+        }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseUrls("http://localhost:5000", "http://*:5000");
+                .UseStartup<Startup>().UseKestrel().UseContentRoot(Directory.GetCurrentDirectory())
+                .UseUrls("http://*:5001");
+
+
+
+
     }
 }
 
