@@ -9,7 +9,7 @@ using ordersREST;
 
 namespace ordersREST.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
     public class ValuesController : ControllerBase
     {

@@ -8,7 +8,7 @@ using REST_lib;
 
 namespace cartREST.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cart")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
