@@ -38,7 +38,7 @@ public class CartController extends AbstractSceneController {
 
         TableColumn<Product, String> product_idCol = new TableColumn<>("Product ID");
         product_idCol.setMinWidth(150);
-        product_idCol.setCellValueFactory(new PropertyValueFactory<>("ProductId"));
+        product_idCol.setCellValueFactory(new PropertyValueFactory<>("productId"));
 
         TableColumn<Product, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setMinWidth(150);

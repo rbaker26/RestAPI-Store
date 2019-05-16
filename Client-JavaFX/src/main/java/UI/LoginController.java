@@ -1,28 +1,18 @@
 package UI;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import Messages.ProductHandler;
 import data.Gridclass;
-import data.ProductUpdate;
 import data.Product;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.controlsfx.control.PopOver;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class LoginController extends AbstractSceneController {
 
@@ -47,19 +37,7 @@ public class LoginController extends AbstractSceneController {
         /**
          * USING GSON FOR JSON STRING
          */
-        String jsonStr = "[{\"ProductId\":1,\"Description\":\"hammer\",\"Quantity\":46,\"Price\":4.5}," +
-                "{\"ProductId\":2,\"Description\":\"box\",\"Quantity\":2,\"Price\":99.89},{\"ProductId\":3," +
-                "\"Description\":\"C#\",\"Quantity\":3,\"Price\":50.0},{\"ProductId\":4,\"Description\":\"Java\"," +
-                "\"Quantity\":1,\"Price\":0.02}]";
-
-        Gson gson = new Gson();
-
-        Type collectionType = new TypeToken<ArrayList<Product>>(){}.getType();
-        ArrayList<Product> productUpdate = gson.fromJson(jsonStr, collectionType);
-        //ProductUpdate productUpdate = gson.fromJson(jsonStr, ProductUpdate.class);
-        System.out.println("**********************************");
-        System.out.println(productUpdate);
-        System.out.println("**********************************");
+        ArrayList<Product> productUpdate = ProductHandler.GetProducts();
 
 
         /**
@@ -67,9 +45,9 @@ public class LoginController extends AbstractSceneController {
          */
 
         for(int i = 0; i < productUpdate.size(); i++) {
-            System.out.println(productUpdate.get(i).Description);
+            System.out.println(productUpdate.get(i).description);
 
-            productList.getItems().addAll(productUpdate.get(i).Description);
+            productList.getItems().addAll(productUpdate.get(i).description);
 
         }
 
@@ -118,9 +96,9 @@ public class LoginController extends AbstractSceneController {
 
         for(int i = 0; i < productUpdate.size(); i++) {
             desgrid[i] = new Gridclass();
-            desgrid[i].setDescriptionObj(productUpdate.get(i).Description);
-            desgrid[i].setPriceObj(productUpdate.get(i).Price);
-            desgrid[i].setQuantityObj(productUpdate.get(i).Quantity);
+            desgrid[i].setDescriptionObj(productUpdate.get(i).description);
+            desgrid[i].setPriceObj(productUpdate.get(i).price);
+            desgrid[i].setQuantityObj(productUpdate.get(i).quantity);
         }
 
         /**

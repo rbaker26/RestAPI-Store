@@ -1,16 +1,8 @@
-import com.google.gson.reflect.TypeToken;
-import data.ProductUpdate;
-import javafx.stage.Stage;
+import Messages.ProductHandler;
+import UI.CartController;
+import UI.LoginController;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import UI.*;
-import com.google.gson.*;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-
+import javafx.stage.Stage;
 
 public class Client extends Application {
 
@@ -23,6 +15,11 @@ public class Client extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        System.out.println("*******************************************************************");
+        System.out.println("Get Request Test");
+        ProductHandler ph = new ProductHandler();
+        ph.GetProducts();
+        System.out.println("*******************************************************************");
 
 //        String jsonStr = "[{\"productId\":22,\"quantityToBeRemoved\":645},{\"productId\":34,\"quantityToBeRemoved\":100},{\"productId\":99,\"quantityToBeRemoved\":10},{\"productId\":63,\"quantityToBeRemoved\":69},{\"productId\":69,\"quantityToBeRemoved\":69}]";
 //       // String jsonStr = "{\"productId\":22,\"quantityToBeRemoved\":645}";
