@@ -2,45 +2,45 @@ package data;
 import static java.util.Objects.hash;
 public class Product {
 
-    public int ProductId ;
+    public int productId;
 
-    public String Description ;
+    public String description ;
 
-    public int Quantity ;
+    public int quantity ;
 
-    public float Price ;
+    public float price ;
 
 
     public Product() {
-        ProductId = 0;
-        Description="";
-        Quantity = 0;
-        Price = 0;
+        productId = 0;
+        description="";
+        quantity = 0;
+        price = 0;
     }
 
     public Product(int productId, String description, int quantity, float price) {
-        ProductId = productId;
-        Description = description;
-        Quantity = quantity;
-        Price = price;
+        this.productId = productId;
+        this.description = description;
+        this.quantity = quantity;
+        this.price = price;
     }
 
     @Override
     public int hashCode() {
-        return hash(ProductId,Description,Quantity,Price);
+        return hash(productId,description,quantity,price);
     }
 
     @Override
     public boolean equals(Object obj) {
 
         Product temp = (Product)obj;
-        return this.ProductId == temp.ProductId && this.Description.equals(temp.Description) &&
-               this.Quantity == temp.Quantity && this.Price == temp.Price;
+        return this.productId == temp.productId && this.description.equals(temp.description) &&
+               this.quantity == temp.quantity && this.price == temp.price;
     }
 
     @Override
     public String toString() {
-        return "Product ID:\t" + ProductId + "\tDescription:\t" + Description +
-               "\tQuantity:\t" + Quantity + "\tPrice:\t" + Price;
+        return "Product ID:\t" + productId + "\tDescription:\t" + description +
+               "\tQuantity:\t" + quantity + "\tPrice:\t" + price;
     }
 }
