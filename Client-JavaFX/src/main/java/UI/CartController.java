@@ -69,6 +69,27 @@ public class CartController extends AbstractSceneController {
 
         setRoot(cartGrid);
 
+        deleteItemButton.setOnAction(e -> {
+            System.out.println("Item deleted");
+            Product selectedItem = productInfoTableView.getSelectionModel().getSelectedItem();
+            productInfoTableView.getItems().remove(selectedItem);
+        });
+
     }
+
+    public javafx.scene.control.Button getDeleteItemButton() {
+        return deleteItemButton;
+    }
+
+    public javafx.scene.control.Button getBackButton() {
+        return backButton;
+    }
+
+    public javafx.scene.control.TableView getTable() {
+        return productInfoTableView;
+    }
+
+
+
 
 }

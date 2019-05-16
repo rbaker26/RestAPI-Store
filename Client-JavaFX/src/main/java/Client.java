@@ -1,6 +1,8 @@
 import Messages.ProductHandler;
 import UI.CartController;
 import UI.LoginController;
+import data.CartUpdate;
+import data.Product;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -47,9 +49,12 @@ public class Client extends Application {
                 System.out.println("Entering with email...");
             });
 
-            // System.out.println("\n\n****************** IT WORKS ******************\n\n");
+            cartController.getBackButton().setOnAction(value -> {
+                loginController.applyScene(primaryStage);
+            });
 
-            loginController.applyScene(primaryStage);
+
+            cartController.applyScene(primaryStage);
             primaryStage.show();
 
         } catch (Exception ex) {

@@ -57,7 +57,7 @@ public class Gridclass extends GridPane {
 
         this.setAlignment(Pos.CENTER);
         this.add(descriptionLabel,5, 0, 1, 2);
-        this.add(descriptionObj, 5, 2, 1 , 3);
+        this.add(descriptionObj, 7, 0, 1 , 3);
         this.add(priceLabel, 5, 6, 1, 2);
         this.add(priceObj, 7, 6,  1, 2);
         this.add(quantityLabel, 5, 8, 1, 2);
