@@ -29,26 +29,24 @@ namespace REST_lib
         /// <ProductID, QuantityPurchased>
         /// This way the client cannot change things like the price of quantity on hand
         /// </summary>
-        public List<KeyValuePair<int, int>> ShoppingCart { get; set; }
-        //********************************************************************************
+		[DataMember]
+        public List<ProductUpdate> ShoppingCart { get; set; }
+		//********************************************************************************
 
 
 
-        //********************************************************************************
-        // Constructors
-        //********************************************************************************
-        public Order()
-        {
-            this.OrderID = 0;
-            this.Email = null;
-            this.TimeStamp = 0;
-        }
+		//********************************************************************************
+		// Constructors
+		//********************************************************************************
+		public Order() : this(0, "", 0) { }
 
-        public Order(int OrderId, string Email, long TimeStamp)
+        public Order(int OrderID, string Email, long TimeStamp)
         {
             this.OrderID = OrderID;
             this.Email = Email;
             this.TimeStamp = TimeStamp;
+
+			ShoppingCart = new List<ProductUpdate>();
         }
         //********************************************************************************
 
@@ -84,8 +82,8 @@ namespace REST_lib
 
         public override string ToString()
         {
-            return "ID:\t" + OrderID + "\tEmail:\t" + Email
-                + "\tShoppingCart:\t" + ShoppingCart + "\tTimeStamp:\t" + TimeStamp;
+			return "ID:\t" + OrderID + "\tEmail:\t" + Email + "\tTimeStamp:\t" + TimeStamp
+				+ "\nShoppingCart:\n\t" + string.Join("\n\t", ShoppingCart) + "\n";
         }
         //********************************************************************************
     }

@@ -48,45 +48,68 @@ namespace ordersREST
         }
         //*****************************************************************************************
 
-        public List<Order> GetOrders()
+        public List<Order> GetOrders(string email)
         {
+			// I considered changing this to return a list of lists of ProductUpdates, but I think
+			// it's better to return a list of orders. We can bundle order-specific things this way.
+
             List<Order> orders = new List<Order>();
             //products.Add(new Product(1, "Hi", 55, 128.20f));
 
             // SQLiteDataReader sqlite_datareader;
-            MySqlDataReader mysql_datareader;
             try
             {
-                string query = "SELECT * FROM orders";
-                //string query = "SELECT * FROM products";
-                // SQLiteCommand command = m_dbConnection.CreateCommand();
-                MySqlCommand command = m_dbConnection.CreateCommand();
-                command.CommandText = query;
+                string idQuery = "SELECT order_id FROM orders WHERE user_id = (@email)";
+				//string query = "SELECT * FROM products";
+				// SQLiteCommand command = m_dbConnection.CreateCommand();
+				MySqlCommand idCommand = m_dbConnection.CreateCommand();
+				idCommand.CommandText = idQuery;
+				idCommand.Parameters.Add("@email", MySqlDbType.String).Value = email;
 
-                mysql_datareader = command.ExecuteReader();
+				List<int> orderIDs = new List<int>();
 
-                Order temp = new Order();
+				//Order temp = new Order();
 
+				using(MySqlDataReader mysql_datareader = idCommand.ExecuteReader()) {
 
-                while (mysql_datareader.Read())
-                {
-                    //temp.ProductId = mysql_datareader.GetInt32(0);
-                    //temp.Description = mysql_datareader.GetString(1);
-                    //temp.Quantity = mysql_datareader.GetInt32(2);
-                    //temp.Price = mysql_datareader.GetFloat(3);
+					while(mysql_datareader.Read()) {
+						orderIDs.Add(mysql_datareader.GetInt32(0));
 
+						//*************************
+						//* Debug Code            *
+						//*************************
+						//Console.WriteLine("\n\n\n\n****************************************************************************");
+						//Console.WriteLine(orderIDs[orderIDs.Count - 1]);
+						//*************************
+					} // End of while
+				} // End of using
 
-                    //*************************
-                    //* Debug Code            *
-                    //*************************
-                    //Console.WriteLine("\n\n\n\n****************************************************************************");
-                    //Console.WriteLine(temp);
-                    //*************************
+				foreach(int id in orderIDs) {
+					string orderQuery = "SELECT product_id, quantity, price FROM orders_list where order_id = (@id)";
 
-                    orders.Add(temp);
-                    temp = new Order();
-                }
-                mysql_datareader.Close();
+					MySqlCommand orderCommand = m_dbConnection.CreateCommand();
+					orderCommand.CommandText = orderQuery;
+					orderCommand.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
+
+					Order resultOrder = new Order(id, email, TimeStamp: 0); // TODO TimeStamp lawl
+
+					using(MySqlDataReader reader = orderCommand.ExecuteReader()) {
+						while(reader.Read()) {
+							int productID = reader.GetInt32(0);
+							int quantity = reader.GetInt32(1);
+							float price = -1;
+							if(!reader.IsDBNull(2)) {
+								price = reader.GetFloat(2);   // TODO This needs to be used somehow
+							}
+
+							resultOrder.ShoppingCart.Add(new ProductUpdate(productID, quantity));
+						} // End while(reader.Read())
+					} // End using(reader)
+
+					orders.Add(resultOrder);
+
+				} // End foreach(id)
+
             }
             catch (Exception e)
             {
@@ -94,8 +117,11 @@ namespace ordersREST
                 Console.Out.WriteLine(e.Message);
                 Console.Out.WriteLine(e.InnerException);
                 Console.Out.WriteLine(e.Source);
+                Console.Out.WriteLine(e.StackTrace);
                 Console.Out.WriteLine("**********************************************************************\n\n");
 
+				// Clean this out; we don't want to return anything if we bumped into an exception.
+				orders = new List<Order>();
             }
 
 

@@ -26,9 +26,16 @@ namespace ordersREST
                 SQL_Interface.Instance.AddNewOrder(c.Email, c.ShoppingCart);
             }, Messenger.MessageType.NewOrders);
 
+			/*
+			List<Order> orders = SQL_Interface.Instance.GetOrders("007dsi@gmail.com");
+			foreach(Order o in orders) {
+				Console.Out.WriteLine(o);
+			}
+			*/
 
-            // Setup WebServer
-            try {
+
+			// Setup WebServer
+			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
 				host.RunAsync();
 				host.WaitForShutdown();
