@@ -17,7 +17,7 @@ public class CartHandler {
 
     public static void RemoveCartUpdate(RemoveCartUpdate removeCartUpdate)
     {
-        
+
     }
 
 
