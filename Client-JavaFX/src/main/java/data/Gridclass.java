@@ -9,6 +9,8 @@ import data.Gridclass;
 import data.Product;
 import javafx.scene.control.TextField;
 
+import java.util.Formatter;
+
 public class Gridclass extends GridPane {
 
     private Label descriptionObj = new Label();
@@ -25,8 +27,6 @@ public class Gridclass extends GridPane {
     private Label priceLabel;
 
     private Label quantityLabel;
-
-    private GridPane desGrid = new GridPane();
 
     private TextField emailField = new TextField();
 
@@ -55,20 +55,20 @@ public class Gridclass extends GridPane {
 
         quantityField.setPrefColumnCount(4);
 
-        desGrid.setAlignment(Pos.CENTER);
-        desGrid.add(descriptionLabel,5, 0, 1, 2);
-        desGrid.add(descriptionObj, 5, 2, 1 , 3);
-        desGrid.add(priceLabel, 5, 6, 1, 2);
-        desGrid.add(priceObj, 7, 6,  1, 2);
-        desGrid.add(quantityLabel, 5, 8, 1, 2);
-        desGrid.add(quantityObj, 7, 8, 1, 2);
+        this.setAlignment(Pos.CENTER);
+        this.add(descriptionLabel,5, 0, 1, 2);
+        this.add(descriptionObj, 5, 2, 1 , 3);
+        this.add(priceLabel, 5, 6, 1, 2);
+        this.add(priceObj, 7, 6,  1, 2);
+        this.add(quantityLabel, 5, 8, 1, 2);
+        this.add(quantityObj, 7, 8, 1, 2);
 
         //desGrid.add(productInfoTableView, 5, 1, 1, 1);
-        desGrid.add(qtyEnteredLabel, 5, 10, 1, 1);
-        desGrid.add(quantityField, 7, 10, 1, 1);
-        desGrid.add(addToCartButton, 5, 12, 1, 2);
+        this.add(qtyEnteredLabel, 5, 10, 1, 1);
+        this.add(quantityField, 7, 10, 1, 1);
+        this.add(addToCartButton, 5, 12, 1, 2);
 
-        desGrid.setMinSize(300, 200);
+        this.setMinSize(300, 200);
 
     }
 
@@ -107,5 +107,13 @@ public class Gridclass extends GridPane {
     }
 
 
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        Formatter form = new Formatter(str);
 
+        form.format("Product: %s%n Price: %s%n", descriptionObj.getText(), priceObj.getText());
+
+        return form.toString();
+    }
 }
