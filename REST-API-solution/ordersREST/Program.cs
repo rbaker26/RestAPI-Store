@@ -15,10 +15,12 @@ namespace ordersREST
     {
         public static void Main(string[] args)
         {
+            Heartbeat.Instance.InitHeartbeat("Orders REST-API");
+            Heartbeat.Instance.Start();
 
             // Listen for Carts published on the newOrders channel.
             // Send this cart to the database.
-			Messenger.CreateInstance("Orders", makeVerbose: true);
+            Messenger.CreateInstance("Orders", makeVerbose: true);
             Messenger.Instance.SetupListener<Cart>((Cart c) => {
                 Console.Out.WriteLine(c);
                 SQL_Interface.Instance.AddNewOrder(c.Email, c.ShoppingCart);
