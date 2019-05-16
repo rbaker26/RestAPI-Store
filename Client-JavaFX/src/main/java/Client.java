@@ -1,6 +1,10 @@
+import Messages.CartHandler;
 import Messages.ProductHandler;
 import UI.CartController;
 import UI.LoginController;
+import data.CartUpdate;
+import data.ProductUpdate;
+import data.RemoveCartUpdate;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -17,8 +21,11 @@ public class Client extends Application {
     public void start(Stage primaryStage) throws Exception {
         System.out.println("*******************************************************************");
         System.out.println("Get Request Test");
-        ProductHandler ph = new ProductHandler();
-        ph.GetProducts();
+//        ProductHandler ph = new ProductHandler();
+//        ph.GetProducts();
+        CartHandler.RemoveCartUpdate(new RemoveCartUpdate("bobby.likes.peen@gmail.com", 3));
+        CartHandler.PurchaseCart("bobby.likes.peen@gmail.com");
+
         System.out.println("*******************************************************************");
 
 //        String jsonStr = "[{\"productId\":22,\"quantityToBeRemoved\":645},{\"productId\":34,\"quantityToBeRemoved\":100},{\"productId\":99,\"quantityToBeRemoved\":10},{\"productId\":63,\"quantityToBeRemoved\":69},{\"productId\":69,\"quantityToBeRemoved\":69}]";
