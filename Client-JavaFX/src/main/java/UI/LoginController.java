@@ -8,6 +8,7 @@ import data.Product;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -148,6 +149,7 @@ public class LoginController extends AbstractSceneController {
             grid.add(scrollPane, 0, 5, 2, 5);
 
 
+
             productList.setOnMouseMoved(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -169,13 +171,17 @@ public class LoginController extends AbstractSceneController {
 
             productList.getSelectionModel().selectedItemProperty().addListener( ov -> {
 
+                /**
+                popUp.setContentNode(blankLabel);
+                ObservableList<Integer> test = productList.getSelectionModel().getSelectedIndices();
+                for(Integer i: test) {
+                    popUp.setContentNode(desgrid[i]);
+                }
+
+ */
                 popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
 
-                popUp.setContentNode(blankLabel);
 
-                for(Object i: productList.getSelectionModel().getSelectedIndices()) {
-                    popUp.setContentNode(desgrid[(int) i]);
-                }
 
             });
 

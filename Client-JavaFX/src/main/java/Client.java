@@ -52,7 +52,7 @@ public class Client extends Application {
 
             // System.out.println("\n\n****************** IT WORKS ******************\n\n");
 
-            cartController.applyScene(primaryStage);
+            loginController.applyScene(primaryStage);
             primaryStage.show();
 
         } catch (Exception ex) {
