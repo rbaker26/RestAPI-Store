@@ -2,35 +2,35 @@ package data;
 import static java.util.Objects.hash;
 public class CartUpdate {
 
-    public String Email;
+    public String email;
     public ProductUpdate productUpdate;
 
 
 
     public CartUpdate() {
-        Email = "";
+        email = "";
         productUpdate = new ProductUpdate();
     }
     public CartUpdate(String email, ProductUpdate productUpdate) {
-        this.Email = email;
+        this.email = email;
         this.productUpdate = productUpdate;
     }
 
 
     @Override
     public int hashCode() {
-        return hash(Email,productUpdate);
+        return hash(email,productUpdate);
     }
 
     @Override
     public boolean equals(Object obj) {
         CartUpdate temp = (CartUpdate)obj;
-        return this.Email == temp.Email && this.productUpdate == temp.productUpdate;
+        return this.email == temp.email && this.productUpdate == temp.productUpdate;
     }
 
     @Override
     public String toString() {
-        return "Email:\t" + this.Email + "\tProduct ID:\t" + productUpdate.productId +
+        return "Email:\t" + this.email + "\tProduct ID:\t" + productUpdate.productId +
                 "\tQuantity:\t" + productUpdate.quantityToBeRemoved;
     }
 }
