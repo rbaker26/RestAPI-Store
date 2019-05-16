@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import org.controlsfx.control.PopOver;
 import org.json.JSONException;
 
@@ -57,6 +58,7 @@ public class LoginController extends AbstractSceneController {
          * GRIDPANE DECLARATION FOR FIRST WINDOW
          */
             GridPane grid = new GridPane();
+
 
             productList.setPrefSize(400, 400);
 
@@ -113,7 +115,7 @@ public class LoginController extends AbstractSceneController {
 
 
             //popUp.setContentNode(desGrid);
-
+            Pane test = new Pane();
             ScrollPane scrollPane = new ScrollPane(productList);
 
             grid.add(instructLabel, 18, 0, 1, 2);
@@ -126,7 +128,7 @@ public class LoginController extends AbstractSceneController {
 
             grid.add(scrollPane, 0, 5, 2, 5);
 
-
+            //grid.add(test, 1, 5, 5, 5);
 
             productList.setOnMouseMoved(new EventHandler<MouseEvent>() {
                 @Override
@@ -156,9 +158,10 @@ public class LoginController extends AbstractSceneController {
                     popUp.setContentNode(desgrid[i]);
                 }
 
- */
-                popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
+ */             //test.getChildren().add(desgrid[productList.getSelectionModel().getSelectedIndex()]);
 
+                popUp.setContentNode(desgrid[productList.getSelectionModel().getSelectedIndex()]);
+                popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
 
 
             });
