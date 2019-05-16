@@ -16,6 +16,10 @@ namespace ProductsREST
     {
         public static void Main(string[] args)
         {
+            Heartbeat.Instance.InitHeartbeat("Products REST-API");
+            Heartbeat.Instance.Start();
+
+
             Messenger.CreateInstance("Products", makeVerbose: true);
             Messenger.Instance.SetupListener<List<ProductUpdate>>((List<ProductUpdate> updates) =>
             {

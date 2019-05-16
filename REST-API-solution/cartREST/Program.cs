@@ -14,8 +14,11 @@ namespace cartREST
 {
 	public class Program {
 		public static void Main(string[] args) {
+            Heartbeat.Instance.InitHeartbeat("Cart REST-API");
+            Heartbeat.Instance.Start();
 
-			Messenger.CreateInstance("Cart", makeVerbose: true);
+
+            Messenger.CreateInstance("Cart", makeVerbose: true);
 
 			try {
 				IWebHost host = CreateWebHostBuilder(args).Build();
