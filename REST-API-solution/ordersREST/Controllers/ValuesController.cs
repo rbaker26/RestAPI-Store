@@ -31,10 +31,10 @@ namespace ordersREST.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(string email)
+        [HttpGet("{email}")]
+        public ActionResult<List<Order>> Get(string email)
         {
-            return NoContent();
+			return SQL_Interface.Instance.GetOrders(email);
         }
 
         // POST api/values
