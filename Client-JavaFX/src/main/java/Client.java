@@ -1,6 +1,8 @@
 import Messages.ProductHandler;
 import UI.CartController;
 import UI.LoginController;
+import data.Order;
+import data.Product;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -15,6 +17,7 @@ public class Client extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         System.out.println("*******************************************************************");
         System.out.println("Get Request Test");
         ProductHandler ph = new ProductHandler();
