@@ -13,6 +13,7 @@ public class ProductHandler {
 
     public static ArrayList<Product> GetProducts()
     {
+        /*
         ArrayList<Product> result = null;
 
         System.out.println("In request body");
@@ -32,5 +33,11 @@ public class ProductHandler {
         }
 
         return result;
+         */
+        return REST.Get()
+                .URI(RESTConfig.productsURI)
+                .ExecuteAndConvert(
+                        new TypeToken<ArrayList<Product>>() { }.getType()
+                );
     }
 }

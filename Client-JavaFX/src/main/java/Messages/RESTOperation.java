@@ -29,7 +29,11 @@ public interface RESTOperation {
     /**
      * Executes the operation.
      * @return The JSON string, if successful; otherwise, null.
-     * @throws IllegalStateException if URI has not been called yet.
+     * @throws IllegalStateException if the URI has not been set yet.
      */
     public String Execute();
+
+    public <T> T ExecuteAndConvert(java.lang.Class<T> classOfT);
+
+    public <T> T ExecuteAndConvert(java.lang.reflect.Type typeOfT);
 }

@@ -1,5 +1,12 @@
 package Messages;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import data.Product;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
 public abstract class AbstractRESTOperation implements RESTOperation {
 
     private String uri;
@@ -42,6 +49,44 @@ public abstract class AbstractRESTOperation implements RESTOperation {
         }
 
         return AbstractExecute();
+    }
+
+    @Override
+    public final <T> T ExecuteAndConvert(Class<T> classOfT) {
+        T result = null;
+        String json = Execute();
+
+        if(json != null) {
+            Gson gson = new Gson();
+            Type collectionType = new TypeToken<ArrayList<Product>>() {
+            }.getType();
+            result = gson.fromJson(json, collectionType);
+            //ProductUpdate productUpdate = gson.fromJson(jsonStr, ProductUpdate.class);
+            System.out.println("**********&&&&&&&&&&&&&&&&&&&&&&&&&&************************");
+            System.out.println(result);
+            System.out.println("**********************************");
+        }
+
+        return result;
+    }
+
+    @Override
+    public final <T> T ExecuteAndConvert(Type typeOfT) {
+        T result = null;
+        String json = Execute();
+
+        if(json != null) {
+            Gson gson = new Gson();
+            Type collectionType = new TypeToken<ArrayList<Product>>() {
+            }.getType();
+            result = gson.fromJson(json, collectionType);
+            //ProductUpdate productUpdate = gson.fromJson(jsonStr, ProductUpdate.class);
+            System.out.println("**********&&&&&&&&&&&&&&&&&&&&&&&&&&************************");
+            System.out.println(result);
+            System.out.println("**********************************");
+        }
+
+        return result;
     }
 
     protected abstract String AbstractExecute();
