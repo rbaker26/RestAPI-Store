@@ -17,7 +17,7 @@ public class ProductHandler {
 
         System.out.println("In request body");
 
-        String json = REST.Get().URI(RESTConfig.serverURL).URIPostfix("products").Execute();
+        String json = REST.Get().URI(RESTConfig.productsURI).Execute();
 
         if(json != null) {
             Gson gson = new Gson();
