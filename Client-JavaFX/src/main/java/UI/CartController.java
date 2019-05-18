@@ -27,7 +27,7 @@ public class CartController extends AbstractSceneController {
     public CartController() {
 
         cartGrid = new GridPane();
-        deleteItemButton = new Button("Delete Item From Cart");
+        deleteItemButton = new Button("Delete Item URI Cart");
         checkoutButton = new Button("Proceed To Checkout Cart");
 
         yourCartLabel = new Label("My Cart");
