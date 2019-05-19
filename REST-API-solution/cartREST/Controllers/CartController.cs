@@ -21,7 +21,7 @@ namespace cartREST.Controllers
 
         // GET api/values/email
         [HttpGet("{email}")]
-        public ActionResult<Cart> Get(string email)
+        public ActionResult<IEnumerable<ProductUpdate>> Get(string email)
         {
             if (email.Equals(""))
                 return NotFound();
@@ -39,7 +39,7 @@ namespace cartREST.Controllers
                 // Send Quantity Updates to Products Inventory Service
                 Messenger.Instance.SendMessage(cart.ShoppingCart, Messenger.MessageType.ProductUpdates);
 
-                return cart;
+                return cart.ShoppingCart;
             }
             catch (Exception)
             {
