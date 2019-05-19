@@ -2,6 +2,7 @@ import Messages.CartHandler;
 import Messages.ProductHandler;
 import UI.CartController;
 import UI.LoginController;
+import UI.RealLogin;
 import data.CartUpdate;
 import data.ProductUpdate;
 import data.RemoveCartUpdate;
@@ -12,10 +13,12 @@ public class Client extends Application {
 
     private static final double initWidth = 800;
     private static final double initHeight = 600;
-    private String userEmail = "someone@somewhere.com";
+    private String userEmail = "helloitsme@adele.com";
 
     private LoginController loginController;
     private CartController cartController;
+    private RealLogin realLogin;
+
 
 
     @Override
@@ -37,6 +40,8 @@ public class Client extends Application {
 //        System.out.println(productUpdate);
 //        System.out.println("**********************************");
 
+        //PUT THIS INSIDE THE LOGINCONTROLLER AND CARTCONTROLLER CONSTRUCTOR CALL
+
 
 
         try {
@@ -45,15 +50,30 @@ public class Client extends Application {
             primaryStage.setHeight(initHeight);
             primaryStage.setWidth(initWidth);
 
+
             loginController = new LoginController(userEmail);
             cartController = new CartController(userEmail);
+            realLogin = new RealLogin();
+
+            userEmail = realLogin.getEmailField();
+
+            realLogin.getEnterButton().setOnAction(value -> {
+                loginController.applyScene(primaryStage);
+            });
+
 
 
             loginController.getEnterButton().setOnAction(value -> {
                 System.out.println("Entering with email...");
             });
 
+            /**
+             * THIS IS WHERE THE CUSTOMER GETS TO VIEW THEIR CART
+             * ORDERS. GETPURCHASE FUNCTION SHOULD FILL THE ARRAYLIST
+             * WITH CART ITEMS. JSON CODE SHOULD GIVE US BACK AN ARRAYLIST.
+             */
             loginController.getSeeCart().setOnAction(value -> {
+
                 cartController.getPurchases();
                 cartController.applyScene(primaryStage);
             });
@@ -62,10 +82,12 @@ public class Client extends Application {
                 loginController.applyScene(primaryStage);
             });
 
+            loginController.getSignOut().setOnAction(value -> {
+                realLogin.applyScene(primaryStage);
+            });
 
 
             // System.out.println("\n\n****************** IT WORKS ******************\n\n");
-
 
 
             loginController.applyScene(primaryStage);

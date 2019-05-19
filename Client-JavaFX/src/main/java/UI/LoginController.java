@@ -27,6 +27,7 @@ public class LoginController extends AbstractSceneController {
     private Button enterButton;
     private Button addToCartButton;
     private Button seeCart;
+    private Button signOut;
     private String usersEmail;
 
     private double mouseX;
@@ -39,7 +40,9 @@ public class LoginController extends AbstractSceneController {
             this.usersEmail = email;
             ListView productList = new ListView();
 
-            seeCart = new Button("Checkout");
+
+            seeCart = new Button("Go To My Cart");
+            signOut = new Button("Sign Out");
         /**
          * USING GSON FOR JSON STRING
          */
@@ -75,7 +78,9 @@ public class LoginController extends AbstractSceneController {
 
             Label emailLabel = new Label("Email: ");
 
-            Label instructLabel = new Label("Sign In to view cart and orders");
+            Label instructLabel = new Label("Hello " + this.usersEmail);
+            Label instructLabel2 = new Label("Select a product and type in how many");
+            Label instructLabel3 = new Label("you would like to add to your cart.");
 
             emailField = new TextField();
             emailField.setPrefColumnCount(10);
@@ -124,17 +129,19 @@ public class LoginController extends AbstractSceneController {
             Pane test = new Pane();
             ScrollPane scrollPane = new ScrollPane(productList);
 
-            grid.add(instructLabel, 18, 0, 1, 2);
+            grid.add(instructLabel, 16, 0, 1, 2);
 
-            grid.add(emailLabel, 16, 2, 1, 2);
+            grid.add(instructLabel2, 16, 2, 1, 2);
 
-            grid.add(emailField, 18, 2, 2, 2);
+            grid.add(instructLabel3, 16, 4, 2, 2);
 
-            grid.add(enterButton, 20, 2, 1, 2);
+           // grid.add(enterButton, 20, 2, 1, 2);
 
             grid.add(scrollPane, 0, 5, 2, 5);
 
-            grid.add(seeCart, 0, 0, 1 ,2);
+            grid.add(seeCart, 2, 0, 1 ,2);
+
+            grid.add(signOut,0, 0, 1, 2);
 
             //grid.add(test, 1, 5, 5, 5);
 
@@ -202,9 +209,11 @@ public class LoginController extends AbstractSceneController {
         return seeCart;
     }
 
-    public void addToCart(Product product, int qty) {
-
+    public Button getSignOut() {
+        return signOut;
     }
+
+
 
 
 }

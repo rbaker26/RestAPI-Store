@@ -14,11 +14,11 @@ public class PurchaseInfo {
         return product;
     }
 
-    public int getQty() {
+    public Integer getQty() {
         return qty;
     }
 
-    public int getProductId() {
+    public Integer getProductId() {
         return product.productId;
     }
 
@@ -26,7 +26,7 @@ public class PurchaseInfo {
         return product.description;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return product.price;
     }
 }

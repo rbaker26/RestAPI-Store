@@ -2,15 +2,15 @@ package data;
 
 import Messages.CartHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import data.Gridclass;
 import data.Product;
 import javafx.scene.control.TextField;
 
 import java.util.Formatter;
+
+import static java.lang.Integer.parseInt;
 
 public class Gridclass extends GridPane {
 
@@ -72,8 +72,19 @@ public class Gridclass extends GridPane {
 
         this.setMinSize(300, 200);
         this.addToCartButton.setOnAction(event -> {
-            // this is where we need to add to a local cart
-            CartHandler.SendCartUpdate(new CartUpdate(this.email, new ProductUpdate(this.productId, Integer.parseInt(this.quantityField.getText()))));
+            if((Integer.parseInt(getQuantityObj()) <= 0)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("No More " + getDescriptionObj() + " In Stock!");
+                alert.setContentText("We are sorry for the inconvenience.");
+
+                alert.showAndWait();
+
+            }
+
+            else {
+                // this is where we need to add to a local cart
+                CartHandler.SendCartUpdate(new CartUpdate(this.email, new ProductUpdate(this.productId, parseInt(this.quantityField.getText()))));
+            }
         });
     }
 
