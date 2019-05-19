@@ -29,7 +29,11 @@ namespace ProductsREST.Controllers
         [HttpGet("{productId}")]
         public ActionResult<Product> Get(int productId)
         {
-            return SQL_Interface.Instance.GetProductById(productId);
+            Console.WriteLine("GETTING PRODUCT: " + productId);
+            lock (SQL_Interface.Instance)
+            {
+                return SQL_Interface.Instance.GetProductById(productId);
+            }
         }
     }
 }

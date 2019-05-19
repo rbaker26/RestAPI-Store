@@ -2,160 +2,89 @@ package UI;
 
 import Messages.CartHandler;
 import Messages.ProductHandler;
-import data.Gridclass;
 import data.Product;
 import data.ProductUpdate;
 import data.PurchaseInfo;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import org.controlsfx.control.PopOver;
-
 import java.util.ArrayList;
 
 public class CartController extends AbstractSceneController {
-
-
-    private static final double popupOffsetX = 10;
-    private static final double popupOffsetY = 5;
-
-    GridPane cartGrid;
-    TableView<Product> productInfoTableView;
-    ArrayList<ProductUpdate> cartUpdate;
-    ArrayList<PurchaseInfo> purchaseList = new ArrayList<>();
-    ObservableList<PurchaseInfo> purchases;
-
-    ScrollPane scrollPane;
-
-    String email;
-
-    Button deleteItemButton;
-    Button checkoutButton;
-    Button backButton;
-
-    Label yourCartLabel;
-    Label emailLabel;
-
+    private GridPane cartGrid;
+    private TableView productInfoTableView;
+    private ArrayList<ProductUpdate> cartUpdate;
+    private ArrayList<Product> productList;
+    private ArrayList<PurchaseInfo> purchaseList = new ArrayList<>();
+    private ScrollPane scrollPane;
+    private String email;
+    private Button deleteItemButton;
+    private Button checkoutButton;
+    private Button backButton;
+    private Label yourCartLabel;
+    private Label emailLabel;
     private double mouseX;
     private double mouseY;
 
     public void getPurchases() {
         this.cartUpdate = CartHandler.PurchaseCart(email);
+        this.productList = ProductHandler.GetProducts();
         for (ProductUpdate p : cartUpdate) {
-            Product product = ProductHandler.GetProduct(p.productId);
-
+            //Product product = ProductHandler.GetProduct(p.productId);
+            Product product = getProduct(p.productId);
+            System.out.println("Product: " + product.description);
             //array list
             purchaseList.add(new PurchaseInfo(product, p.quantityToBeRemoved));
         }
-
-        //observable list
-        purchases = FXCollections.observableArrayList(purchaseList);
-
-       // return purchaseList;
-
+        System.out.println("ADDING TO TABLEVIEW: size=" + purchaseList.size());
+        for(PurchaseInfo p : purchaseList) {
+            System.out.println("IN LOOP Product: " + p.getDescription());
+            System.out.println("IN LOOP Qty: " + p.getQty());
+            System.out.println("IN LOOP Price: " + p.getPrice());
+            productInfoTableView.getItems().add(p);
+        }
     }
 
+    public Product getProduct(int productId) {
+        System.out.println("Looking for productId: " + productId);
+        for(Product p : productList) {
+            if(p.productId == productId) {
+                return p;
+            }
+        }
+        return null;
+    }
     public CartController(String email) {
 
         this.email = email;
-
-        ListView productCartList = new ListView();
-
         cartGrid = new GridPane();
         deleteItemButton = new Button("Delete Item From Cart");
         checkoutButton = new Button("Proceed To Checkout Cart");
-
         yourCartLabel = new Label("My Cart");
         emailLabel = new Label();
-
         backButton = new Button("Back");
-
         productInfoTableView = new TableView<>();
-
-       // ArrayList<PurchaseInfo> cartList = getPurchases();
-
-        //Gridclass[] desgrid = new Gridclass[productUpdate.size()];
-
-        Gridclass[] desgrid = new Gridclass[purchaseList.size()];
-
-
-        for(int i = 0; i < purchaseList.size(); i++) {
-            System.out.println("All my cart items here: ");
-            System.out.println(purchaseList.get(i).getDescription());
-
-            productCartList.getItems().addAll(purchaseList.get(i).getDescription());
-
-        }
-
-        for(int i = 0; i < purchaseList.size(); i++) {
-            desgrid[i] = new Gridclass(purchaseList.get(i).getProductId(), this.email);
-            desgrid[i].setDescriptionObj(purchaseList.get(i).getDescription());
-            desgrid[i].setPriceObj(purchaseList.get(i).getPrice());
-            desgrid[i].setQuantityObj(purchaseList.get(i).getQty());
-        }
-
-        //OUTPUT THE CART LIST HERE
-        for (int i = 0 ; i < purchaseList.size(); i ++ ) {
-
-            System.out.println(desgrid[i].getQuantityObj());
-            System.out.println(desgrid[i].getPriceObj());
-            System.out.println(desgrid[i].getDescriptionObj());
-
-        }
-
-
-        scrollPane = new ScrollPane(productCartList);
-
-
-        /**
-         * POPOVER DECLARATION
-         */
-        PopOver popUp = new PopOver();
-
-        popUp.setTitle("In My Cart - Product Information");
-        popUp.setArrowLocation(PopOver.ArrowLocation.LEFT_CENTER);
-        popUp.setAutoHide(false);
-        popUp.setDetachable(true);
-
-
-
-        productCartList.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                mouseX = event.getScreenX();
-                mouseY = event.getScreenY();
-            }
-        });
-
-/**
-        TableColumn<PurchaseInfo, Integer> product_idCol = new TableColumn<>("Product ID");
-        product_idCol.setMinWidth(150);
-        product_idCol.setCellValueFactory(new PropertyValueFactory<>("productId"));
+        scrollPane = new ScrollPane(productInfoTableView);
 
         TableColumn<PurchaseInfo, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setMinWidth(150);
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-
-        TableColumn<PurchaseInfo, String> quantityCol = new TableColumn<>("Quantity Selected");
+        TableColumn<PurchaseInfo, Integer> quantityCol = new TableColumn<>("Quantity Selected");
         quantityCol.setMinWidth(150);
         quantityCol.setCellValueFactory(new PropertyValueFactory<>("qty"));
-
-        TableColumn<PurchaseInfo, String> priceCol = new TableColumn<>("Price");
+        TableColumn<PurchaseInfo, Float> priceCol = new TableColumn<>("Price");
         priceCol.setMinWidth(150);
         priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-**/
-
-        //productInfoTableView.getColumns().addAll(product_idCol, descriptionCol, quantityCol, priceCol);
 
 
+        productInfoTableView.getColumns().addAll(descriptionCol, quantityCol, priceCol);
 
-       // productInfoTableView.getColumns().addAll(product_idCol, descriptionCol, quantityCol, priceCol);
-
+//        productInfoTableView.getItems().add(new PurchaseInfo(new Product(1, "test 1", 5, 4.99f), 3));
+//        productInfoTableView.getItems().add(new PurchaseInfo(new Product(2, "test 2", 7, 3.99f), 2));
 
         cartGrid.getChildren().add(yourCartLabel);
         yourCartLabel.setAlignment(Pos.CENTER);
@@ -169,20 +98,7 @@ public class CartController extends AbstractSceneController {
         cartGrid.setAlignment(Pos.CENTER);
 
         setRoot(cartGrid);
-
-        //SELECT ITEM FROM LISTVIEW TO VIEW ITS CONTENTS:
-        productCartList.getSelectionModel().selectedItemProperty().addListener( ov -> {
-
-            popUp.setContentNode(desgrid[productCartList.getSelectionModel().getSelectedIndex()]);
-            popUp.show(cartGrid, mouseX + popupOffsetX, mouseY + popupOffsetY);
-
-
-        });
-
-
     }
-
-
 
     public Button getBackButton() {
         return backButton;

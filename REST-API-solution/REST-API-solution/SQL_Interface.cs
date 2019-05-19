@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using MySql.Data;
 using MySql.Data.MySqlClient;
-
+using System.Threading;
 using REST_lib;
 
 namespace ProductsREST
@@ -19,7 +19,7 @@ namespace ProductsREST
         private static readonly Lazy<SQL_Interface>
         m_lazy = new Lazy<SQL_Interface>(() => new SQL_Interface());
 
-        public static SQL_Interface Instance { get { return m_lazy.Value; } }
+        public static SQL_Interface Instance { get { lock (m_lazy) { return m_lazy.Value; } } }
         //*****************************************************************************************
 
 
@@ -105,24 +105,34 @@ namespace ProductsREST
 
         public Product GetProductById(int productId)
         {
+            Console.WriteLine("INSTANTIATING PRODUCT");
             Product temp = new Product();
             //products.Add(new Product(1, "Hi", 55, 128.20f));
 
             // SQLiteDataReader sqlite_datareader;
-            MySqlDataReader mysql_datareader;
+            Console.WriteLine("INSTANTIATING DATA READER");
+            //MySqlDataReader mysql_datareader;
             try
             {
+                /*
+                Console.WriteLine("BUILDING STRING");
                 string query = "SELECT product_id, description, quantity, price FROM products WHERE product_id = (@id)";
                 //string query = "SELECT * FROM products";
                 // SQLiteCommand command = m_dbConnection.CreateCommand();
+                Console.WriteLine("CREATING SQL COMMAND");
                 MySqlCommand command = m_dbConnection.CreateCommand();
+                Console.WriteLine("SETTING QUERY");
                 command.CommandText = query;
+                Console.WriteLine("BINDING VALUES");
                 command.Parameters.Add("@id", MySqlDbType.Int32).Value = productId;
 
+                Console.WriteLine("EXECUTING QUERY");
                 mysql_datareader = command.ExecuteReader();
 
+                Console.WriteLine("READING VALUES");
                 while (mysql_datareader.Read())
                 {
+                    Console.WriteLine("SETTING VALUES");
                     temp.ProductId = mysql_datareader.GetInt32(0);
                     temp.Description = mysql_datareader.GetString(1);
                     temp.Quantity = mysql_datareader.GetInt32(2);
@@ -137,7 +147,46 @@ namespace ProductsREST
                     //*************************
 
                 }
+                Console.WriteLine("CLOSING READER");
                 mysql_datareader.Close();
+                */
+                Console.WriteLine("BUILDING STRING");
+                string query = "SELECT product_id, description, quantity, price FROM products WHERE product_id = (@id)";
+                //string query = "SELECT * FROM products";
+                // SQLiteCommand command = m_dbConnection.CreateCommand();
+                Console.WriteLine("CREATING SQL COMMAND");
+                MySqlCommand command = m_dbConnection.CreateCommand();
+                Console.WriteLine("SETTING QUERY");
+                command.CommandText = query;
+                Console.WriteLine("BINDING VALUES");
+                command.Parameters.Add("@id", MySqlDbType.Int32).Value = productId;
+
+                Console.WriteLine("EXECUTING QUERY");
+                using (MySqlDataReader mysql_datareader = command.ExecuteReader())
+                {
+                    //mysql_datareader = command.ExecuteReader();
+
+                    Console.WriteLine("READING VALUES");
+                    while (mysql_datareader.Read())
+                    {
+                        Console.WriteLine("SETTING VALUES");
+                        temp.ProductId = mysql_datareader.GetInt32(0);
+                        temp.Description = mysql_datareader.GetString(1);
+                        temp.Quantity = mysql_datareader.GetInt32(2);
+                        temp.Price = mysql_datareader.GetFloat(3);
+
+
+                        //*************************
+                        //* Debug Code            *
+                        //*************************
+                        //Console.WriteLine("\n\n\n\n****************************************************************************");
+                        //Console.WriteLine(temp);
+                        //*************************
+
+                    }
+                    Console.WriteLine("CLOSING READER");
+                }
+                //mysql_datareader.Close();
             }
             catch (Exception e)
             {
@@ -147,7 +196,7 @@ namespace ProductsREST
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
-
+            Console.WriteLine("RETURNING DATA");
             return temp;
         }
 
