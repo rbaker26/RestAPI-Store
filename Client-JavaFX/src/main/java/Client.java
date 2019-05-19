@@ -3,10 +3,7 @@ import Messages.OrderHandler;
 import Messages.ProductHandler;
 import UI.CartController;
 import UI.LoginController;
-import data.CartUpdate;
-import data.Order;
-import data.Product;
-import data.ProductUpdate;
+import data.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
