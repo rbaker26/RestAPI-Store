@@ -1,8 +1,11 @@
 package UI;
 
+import Messages.CartHandler;
 import Messages.ProductHandler;
+import data.CartUpdate;
 import data.Gridclass;
 import data.Product;
+import data.ProductUpdate;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -23,6 +26,8 @@ public class LoginController extends AbstractSceneController {
     private TextField quantityField;
     private Button enterButton;
     private Button addToCartButton;
+    private Button seeCart;
+    private String usersEmail = "someone@somewhere.com";
 
     private double mouseX;
     private double mouseY;
@@ -34,6 +39,7 @@ public class LoginController extends AbstractSceneController {
 
             ListView productList = new ListView();
 
+            seeCart = new Button("Checkout");
         /**
          * USING GSON FOR JSON STRING
          */
@@ -95,7 +101,7 @@ public class LoginController extends AbstractSceneController {
         Gridclass[] desgrid = new Gridclass[productUpdate.size()];
 
         for(int i = 0; i < productUpdate.size(); i++) {
-            desgrid[i] = new Gridclass();
+            desgrid[i] = new Gridclass(productUpdate.get(i).productId, this.usersEmail);
             desgrid[i].setDescriptionObj(productUpdate.get(i).description);
             desgrid[i].setPriceObj(productUpdate.get(i).price);
             desgrid[i].setQuantityObj(productUpdate.get(i).quantity);
@@ -127,6 +133,8 @@ public class LoginController extends AbstractSceneController {
             grid.add(enterButton, 20, 2, 1, 2);
 
             grid.add(scrollPane, 0, 5, 2, 5);
+
+            grid.add(seeCart, 0, 0, 1 ,2);
 
             //grid.add(test, 1, 5, 5, 5);
 
@@ -166,6 +174,8 @@ public class LoginController extends AbstractSceneController {
 
             });
 
+
+
             setRoot(grid);
 
         }
@@ -188,6 +198,13 @@ public class LoginController extends AbstractSceneController {
         this.emailField = emailField;
     }
 
+    public Button getSeeCart() {
+        return seeCart;
+    }
+
+    public void addToCart(Product product, int qty) {
+
+    }
 
 
 }

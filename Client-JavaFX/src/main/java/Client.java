@@ -54,7 +54,19 @@ public class Client extends Application {
                 System.out.println("Entering with email...");
             });
 
+            loginController.getSeeCart().setOnAction(value -> {
+                cartController.applyScene(primaryStage);
+            });
+
+            cartController.getBackButton().setOnAction(value -> {
+                loginController.applyScene(primaryStage);
+            });
+
+
+
             // System.out.println("\n\n****************** IT WORKS ******************\n\n");
+
+
 
             loginController.applyScene(primaryStage);
             primaryStage.show();

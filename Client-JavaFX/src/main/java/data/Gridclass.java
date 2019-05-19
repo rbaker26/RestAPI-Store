@@ -1,5 +1,6 @@
 package data;
 
+import Messages.CartHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,6 +22,8 @@ public class Gridclass extends GridPane {
 
     private Label qtyEnteredLabel;
 
+    private final int productId;
+    private final String email;
 
     private Label descriptionLabel;
 
@@ -28,15 +31,14 @@ public class Gridclass extends GridPane {
 
     private Label quantityLabel;
 
-    private TextField emailField = new TextField();
-
     private TextField quantityField;
 
     private Button addToCartButton;
 
 
-    public Gridclass() {
-
+    public Gridclass(int productId, String email) {
+        this.productId = productId;
+        this.email = email;
         qtyEnteredLabel = new Label("How many would you like to order?: ");
 
         descriptionLabel = new Label("Description: ");
@@ -57,7 +59,7 @@ public class Gridclass extends GridPane {
 
         this.setAlignment(Pos.CENTER);
         this.add(descriptionLabel,5, 0, 1, 2);
-        this.add(descriptionObj, 5, 2, 1 , 3);
+        this.add(descriptionObj, 7, 0, 1 , 3);
         this.add(priceLabel, 5, 6, 1, 2);
         this.add(priceObj, 7, 6,  1, 2);
         this.add(quantityLabel, 5, 8, 1, 2);
@@ -69,7 +71,10 @@ public class Gridclass extends GridPane {
         this.add(addToCartButton, 5, 12, 1, 2);
 
         this.setMinSize(300, 200);
-
+        this.addToCartButton.setOnAction(event -> {
+            // this is where we need to add to a local cart
+            CartHandler.SendCartUpdate(new CartUpdate(this.email, new ProductUpdate(this.productId, Integer.parseInt(this.quantityField.getText()))));
+        });
     }
 
     public String getDescriptionObj() {
@@ -106,6 +111,9 @@ public class Gridclass extends GridPane {
 
     }
 
+    public TextField getQuantityField() {
+        return quantityField;
+    }
 
     @Override
     public String toString() {
