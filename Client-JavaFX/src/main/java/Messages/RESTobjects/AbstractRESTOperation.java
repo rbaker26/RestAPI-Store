@@ -1,8 +1,9 @@
-package Messages;
+package Messages.RESTobjects;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.Product;
+import sun.security.util.Debug;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -11,14 +12,40 @@ public abstract class AbstractRESTOperation implements RESTOperation {
 
     private String uri;
     private String body;
+    private boolean isVerbose;
 
     public AbstractRESTOperation() {
         uri = null;
         body = null;
+        isVerbose = false;
     }
 
     protected String GetURI() { return uri; }
     protected String GetBody() { return body; }
+
+    /**
+     * Prints the given message only if this operation is verbose.
+     * @param msg Message to (maybe) print.
+     */
+    protected void DebugMsg(String msg) {
+        if(IsVerbose()) {
+            System.out.println(msg);
+        }
+    }
+
+    /**
+     * Checks if verbose.
+     *
+     * That is, if we are very talkative. I don't know about you,
+     * but this comment feels like chatting. The other day I tripped over a puddle
+     * and fell into a brick. Though it really hurt, it didn't hurt quite as much
+     * as the doctor's paycheck. So I asked to see a financial doctor, but I was
+     * told that they had all fallen into a depression.
+     * @return True if we're verbose.
+     */
+    protected boolean IsVerbose() {
+        return isVerbose;
+    }
 
     @Override
     public final RESTOperation Body(String jsonBody) {
@@ -58,13 +85,11 @@ public abstract class AbstractRESTOperation implements RESTOperation {
 
         if(json != null) {
             Gson gson = new Gson();
-            Type collectionType = new TypeToken<ArrayList<Product>>() {
-            }.getType();
-            result = gson.fromJson(json, collectionType);
-            //ProductUpdate productUpdate = gson.fromJson(jsonStr, ProductUpdate.class);
-            System.out.println("**********&&&&&&&&&&&&&&&&&&&&&&&&&&************************");
-            System.out.println(result);
-            System.out.println("**********************************");
+            result = gson.fromJson(json, classOfT);
+
+            if(result != null) {
+                DebugMsg(result.toString());
+            }
         }
 
         return result;
@@ -77,16 +102,20 @@ public abstract class AbstractRESTOperation implements RESTOperation {
 
         if(json != null) {
             Gson gson = new Gson();
-            Type collectionType = new TypeToken<ArrayList<Product>>() {
-            }.getType();
-            result = gson.fromJson(json, collectionType);
-            //ProductUpdate productUpdate = gson.fromJson(jsonStr, ProductUpdate.class);
-            System.out.println("**********&&&&&&&&&&&&&&&&&&&&&&&&&&************************");
-            System.out.println(result);
-            System.out.println("**********************************");
+            result = gson.fromJson(json, typeOfT);
+
+            if(result != null) {
+                DebugMsg(result.toString());
+            }
         }
 
         return result;
+    }
+
+    @Override
+    public RESTOperation Verbose() {
+        isVerbose = true;
+        return this;
     }
 
     protected abstract String AbstractExecute();

@@ -1,8 +1,9 @@
 package Messages;
 
+import Messages.RESTobjects.REST;
+import Messages.RESTobjects.RESTConfig;
 import com.google.gson.reflect.TypeToken;
 import data.Order;
-import data.Product;
 
 import java.util.ArrayList;
 

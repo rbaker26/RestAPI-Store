@@ -19,11 +19,11 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        System.out.println("*******************************************************************");
+        //System.out.println("*******************************************************************");
         //System.out.println("Get Request Test");
         //ProductHandler.GetProducts();
         //OrderHandler.GetOrders("007dsi@gmail.com");
-        System.out.println("*******************************************************************");
+        //System.out.println("*******************************************************************");
 
 //        String jsonStr = "[{\"productId\":22,\"quantityToBeRemoved\":645},{\"productId\":34,\"quantityToBeRemoved\":100},{\"productId\":99,\"quantityToBeRemoved\":10},{\"productId\":63,\"quantityToBeRemoved\":69},{\"productId\":69,\"quantityToBeRemoved\":69}]";
 //       // String jsonStr = "{\"productId\":22,\"quantityToBeRemoved\":645}";

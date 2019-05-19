@@ -1,4 +1,4 @@
-package Messages;
+package Messages.RESTobjects;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,22 +7,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class RESTGetOperation extends AbstractRESTOperation {
+class RESTGetOperation extends AbstractRESTOperation {
 
-    /*
-    String urlString;
-
-    RESTGetOperation(String urlString) {
-        //"http://68.5.123.182:5001/api/products/");
-        this.urlString = urlString;
-    }
-     */
+    RESTGetOperation () {}
 
     @Override
     public String AbstractExecute() {
         String result = null;
 
-        System.out.println("In request body");
+        DebugMsg("GET to " + GetURI());
         try
         {
             URL url = new URL(GetURI());
@@ -40,14 +33,14 @@ public class RESTGetOperation extends AbstractRESTOperation {
             ));
 
             String output;
-            System.out.println("Output from Server .... \n");
+            DebugMsg("Output from Server .... \n");
             String json= "";
             while ((output = br.readLine()) != null) {
-                System.out.println(output);
-                json = output;
+                //System.out.println(output);
+                json += output;
             }
-            System.out.println(output);
-            System.out.println(json);
+            //System.out.println(output);
+            DebugMsg(json);
             conn.disconnect();
 
             result = json;

@@ -1,4 +1,4 @@
-package Messages;
+package Messages.RESTobjects;
 
 public final class REST {
     private REST() {}

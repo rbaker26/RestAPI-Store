@@ -1,4 +1,4 @@
-package Messages;
+package Messages.RESTobjects;
 
 public interface RESTOperation {
 
@@ -27,13 +27,34 @@ public interface RESTOperation {
     public RESTOperation URIPostfix(String postfix);
 
     /**
+     * Makes the operation a verbose one. It will print stuff out when executing.
+     * @return The updated RESTOperation.
+     */
+    public RESTOperation Verbose();
+
+    /**
      * Executes the operation.
      * @return The JSON string, if successful; otherwise, null.
      * @throws IllegalStateException if the URI has not been set yet.
      */
     public String Execute();
 
+    /**
+     * Executes the operation, and then converts the JSON result into an object.
+     * @param classOfT The object's class object.
+     * @param <T> The type of object to convert to.
+     * @return The converted object, or null if failed.
+     * @throws IllegalStateException if the URI has not been set yet.
+     */
     public <T> T ExecuteAndConvert(java.lang.Class<T> classOfT);
 
+    /**
+     * Executes the operation, and then converts the JSON result into an object.
+     * @param typeOfT The object's type object.
+     * @param <T> The type of object to convert to.
+     * @return The converted object, or null if failed.
+     * @throws IllegalStateException if the URI has not been set yet.
+     */
     public <T> T ExecuteAndConvert(java.lang.reflect.Type typeOfT);
+
 }
