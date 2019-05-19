@@ -27,16 +27,16 @@ public class LoginController extends AbstractSceneController {
     private Button enterButton;
     private Button addToCartButton;
     private Button seeCart;
-    private String usersEmail = "someone@somewhere.com";
+    private String usersEmail;
 
     private double mouseX;
     private double mouseY;
 
     private String[] productArr = {};
 
-    public LoginController() throws JSONException{
+    public LoginController(String email) throws JSONException{
 
-
+            this.usersEmail = email;
             ListView productList = new ListView();
 
             seeCart = new Button("Checkout");

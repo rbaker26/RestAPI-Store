@@ -12,6 +12,7 @@ public class Client extends Application {
 
     private static final double initWidth = 800;
     private static final double initHeight = 600;
+    private String userEmail = "someone@somewhere.com";
 
     private LoginController loginController;
     private CartController cartController;
@@ -23,8 +24,6 @@ public class Client extends Application {
         System.out.println("Get Request Test");
 //        ProductHandler ph = new ProductHandler();
 //        ph.GetProducts();
-        CartHandler.RemoveCartUpdate(new RemoveCartUpdate("bobby.likes.peen@gmail.com", 3));
-        CartHandler.PurchaseCart("bobby.likes.peen@gmail.com");
 
         System.out.println("*******************************************************************");
 
@@ -46,8 +45,8 @@ public class Client extends Application {
             primaryStage.setHeight(initHeight);
             primaryStage.setWidth(initWidth);
 
-            loginController = new LoginController();
-            cartController = new CartController();
+            loginController = new LoginController(userEmail);
+            cartController = new CartController(userEmail);
 
 
             loginController.getEnterButton().setOnAction(value -> {
@@ -55,6 +54,7 @@ public class Client extends Application {
             });
 
             loginController.getSeeCart().setOnAction(value -> {
+                cartController.getPurchases();
                 cartController.applyScene(primaryStage);
             });
 
