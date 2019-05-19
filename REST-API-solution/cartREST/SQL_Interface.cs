@@ -18,7 +18,7 @@ namespace cartREST
         private static readonly Lazy<SQL_Interface>
         m_lazy = new Lazy<SQL_Interface>(() => new SQL_Interface());
 
-        public static SQL_Interface Instance { get { return m_lazy.Value; } }
+        public static SQL_Interface Instance { get { lock (m_lazy) { return m_lazy.Value; } } }
         //*****************************************************************************************
 
 
