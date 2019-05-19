@@ -7,6 +7,10 @@ public final class REST {
         return new RESTGetOperation();
     }
 
+    public static RESTOperation Post() {
+        return new RESTPostOperation();
+    }
+
     /*
     public RESTOperation Get(String serviceName) {
         return Get(serviceName, "");

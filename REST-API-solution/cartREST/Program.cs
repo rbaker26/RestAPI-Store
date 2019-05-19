@@ -34,7 +34,8 @@ namespace cartREST
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
 			WebHost.CreateDefaultBuilder(args)
 				.UseStartup<Startup>()
-            .UseUrls("http://*:5002");
+				.UseUrls("http://*:5002");
+				//.UseUrls("http://localhost:5002");
 
-    }
+	}
 }

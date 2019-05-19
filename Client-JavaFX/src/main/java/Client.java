@@ -1,9 +1,12 @@
+import Messages.CartHandler;
 import Messages.OrderHandler;
 import Messages.ProductHandler;
 import UI.CartController;
 import UI.LoginController;
+import data.CartUpdate;
 import data.Order;
 import data.Product;
+import data.ProductUpdate;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -23,6 +26,7 @@ public class Client extends Application {
         //System.out.println("Get Request Test");
         //ProductHandler.GetProducts();
         //OrderHandler.GetOrders("007dsi@gmail.com");
+        //CartHandler.AddToCart(new CartUpdate("Yahoo@gmail.com", new ProductUpdate(5, 2)));
         //System.out.println("*******************************************************************");
 
 //        String jsonStr = "[{\"productId\":22,\"quantityToBeRemoved\":645},{\"productId\":34,\"quantityToBeRemoved\":100},{\"productId\":99,\"quantityToBeRemoved\":10},{\"productId\":63,\"quantityToBeRemoved\":69},{\"productId\":69,\"quantityToBeRemoved\":69}]";

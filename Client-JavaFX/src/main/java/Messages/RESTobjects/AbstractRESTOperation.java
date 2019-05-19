@@ -49,7 +49,8 @@ public abstract class AbstractRESTOperation implements RESTOperation {
 
     @Override
     public final RESTOperation Body(String jsonBody) {
-        return null;
+        body = jsonBody;
+        return this;
     }
 
     @Override
