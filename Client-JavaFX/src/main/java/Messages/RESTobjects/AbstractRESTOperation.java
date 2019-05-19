@@ -1,12 +1,14 @@
 package Messages.RESTobjects;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import data.Product;
-import sun.security.util.Debug;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public abstract class AbstractRESTOperation implements RESTOperation {
 
@@ -71,12 +73,55 @@ public abstract class AbstractRESTOperation implements RESTOperation {
     }
 
     @Override
+    public RESTOperation Verbose() {
+        isVerbose = true;
+        return this;
+    }
+
+    @Override
     public final String Execute() {
+        String result = null;
+
         if(uri == null) {
             throw new IllegalStateException("Cannot execute REST operation without a URI");
         }
 
-        return AbstractExecute();
+        try {
+            URL url = new URL(GetURI());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            SetupConnection(conn);
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : REST error code : "
+                        + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream()
+            ));
+
+            String output;
+            DebugMsg("\nOutput from Server ....");
+            String json= "";
+            while ((output = br.readLine()) != null) {
+                //System.out.println(output);
+                json += output;
+            }
+            //System.out.println(output);
+            DebugMsg(json);
+            conn.disconnect();
+
+            result = json;
+        }
+        catch ( MalformedURLException e) {
+            e.printStackTrace();
+        }
+        catch ( IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     @Override
@@ -89,7 +134,7 @@ public abstract class AbstractRESTOperation implements RESTOperation {
             result = gson.fromJson(json, classOfT);
 
             if(result != null) {
-                DebugMsg(result.toString());
+                DebugMsg("Converted result: " + result.toString());
             }
         }
 
@@ -106,18 +151,12 @@ public abstract class AbstractRESTOperation implements RESTOperation {
             result = gson.fromJson(json, typeOfT);
 
             if(result != null) {
-                DebugMsg(result.toString());
+                DebugMsg("Converted result: " + result.toString());
             }
         }
 
         return result;
     }
 
-    @Override
-    public RESTOperation Verbose() {
-        isVerbose = true;
-        return this;
-    }
-
-    protected abstract String AbstractExecute();
+    protected abstract void SetupConnection(HttpURLConnection conn) throws java.io.IOException;
 }

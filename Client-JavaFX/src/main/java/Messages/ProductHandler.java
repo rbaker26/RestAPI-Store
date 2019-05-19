@@ -21,5 +21,12 @@ public final class ProductHandler {
                 );
     }
 
+    public static Product GetProduct(int id) {
+        return REST.Get()
+                .URI(RESTConfig.productsURI)
+                .URIPostfix(String.format("%d", id))
+                .Verbose()
+                .ExecuteAndConvert(Product.class);
+    }
 
 }

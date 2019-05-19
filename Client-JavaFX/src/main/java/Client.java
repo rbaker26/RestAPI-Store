@@ -24,7 +24,9 @@ public class Client extends Application {
         //ProductHandler.GetProducts();
         //OrderHandler.GetOrders("007dsi@gmail.com");
         //CartHandler.AddToCart(new CartUpdate("Yahoo@gmail.com", new ProductUpdate(5, 2)));
-        //System.out.println("*******************************************************************");
+        ProductHandler.GetProduct(2);
+        ProductHandler.GetProduct(4);
+        System.out.println("*******************************************************************");
 
 //        String jsonStr = "[{\"productId\":22,\"quantityToBeRemoved\":645},{\"productId\":34,\"quantityToBeRemoved\":100},{\"productId\":99,\"quantityToBeRemoved\":10},{\"productId\":63,\"quantityToBeRemoved\":69},{\"productId\":69,\"quantityToBeRemoved\":69}]";
 //       // String jsonStr = "{\"productId\":22,\"quantityToBeRemoved\":645}";

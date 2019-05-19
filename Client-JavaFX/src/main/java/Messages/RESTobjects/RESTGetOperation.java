@@ -12,50 +12,12 @@ class RESTGetOperation extends AbstractRESTOperation {
     RESTGetOperation () {}
 
     @Override
-    public String AbstractExecute() {
-        String result = null;
+    public void SetupConnection(HttpURLConnection conn) throws java.io.IOException {
 
         DebugMsg("GET to " + GetURI());
-        try
-        {
-            URL url = new URL(GetURI());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
 
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : REST error code : "
-                        + conn.getResponseCode());
-            }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream()
-            ));
-
-            String output;
-            DebugMsg("Output from Server .... \n");
-            String json= "";
-            while ((output = br.readLine()) != null) {
-                //System.out.println(output);
-                json += output;
-            }
-            //System.out.println(output);
-            DebugMsg(json);
-            conn.disconnect();
-
-            result = json;
-
-        } catch (MalformedURLException e) {
-
-            e.printStackTrace();
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        }
-
-        return result;
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
     }
 
 }

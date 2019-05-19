@@ -10,22 +10,22 @@ import java.net.URL;
 
 import static java.lang.String.join;
 
-class RESTPostOperation extends AbstractRESTOperation {
+class RESTPutOperation extends AbstractRESTOperation {
 
-    RESTPostOperation() {}
+    RESTPutOperation() {}
 
     @Override
-    public void SetupConnection(HttpURLConnection conn) throws java.io.IOException {
+    public void SetupConnection(HttpURLConnection conn) throws java.io.IOException  {
 
-        if(GetBody() == null) {
+        if (GetBody() == null) {
             throw new IllegalStateException("Cannot make a POST request with no body");
         }
 
-        DebugMsg("POST to " + GetURI());
-        DebugMsg("  body: " + GetBody());
+        DebugMsg("PUT to " + GetURI());
+        DebugMsg(" body: " + GetBody());
 
         conn.setDoOutput(true);
-        conn.setRequestMethod("POST");
+        conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-Type", "application/json");
 
         OutputStream os = conn.getOutputStream();
