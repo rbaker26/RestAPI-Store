@@ -152,6 +152,52 @@ namespace ProductsREST
         }
 
 
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newProduct"></param>
+		/// <returns></returns>
+		public int AddNewItem(Product newProduct) {
+
+			try {
+				int resultID;
+
+				MySqlCommand insertCommand = m_dbConnection.CreateCommand();
+				insertCommand.CommandText = "INSERT INTO products (description, quantity, price, photo) VALUES (@desc, @qty, @price, 0)";
+				insertCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
+				insertCommand.Parameters.Add("@qty", MySqlDbType.Int32).Value = newProduct.Quantity;
+				insertCommand.Parameters.Add("@price", MySqlDbType.Float).Value = newProduct.Price;
+
+				insertCommand.ExecuteNonQuery();
+
+
+				MySqlCommand readCommand = m_dbConnection.CreateCommand();
+				readCommand.CommandText = "SELECT product_id FROM products WHERE description = @desc ORDER BY product_id DESC LIMIT 1";
+				readCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
+
+				using(MySqlDataReader reader = readCommand.ExecuteReader()) {
+					if(reader.Read()) {
+						resultID = reader.GetInt32(0);
+					}
+					else {
+						throw new Exception("Unable to retrieve newly inserted item. WUT?");
+					}
+				}
+
+				return resultID;
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+				throw new InvalidOperationException("Failed to insert item", e);
+			}
+		}
+
         public void ReduceItemQuantity(ProductUpdate productUpdate)
         {
             int ProductId = productUpdate.ProductId;

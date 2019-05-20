@@ -31,5 +31,18 @@ namespace ProductsREST.Controllers
         {
             return SQL_Interface.Instance.GetProductById(productId);
         }
+
+		// POST api/values
+		[HttpPost]
+		public ActionResult<Product> Post(Product newProduct) {
+			try {
+				int newID = SQL_Interface.Instance.AddNewItem(newProduct);
+
+				return SQL_Interface.Instance.GetProductById(newID);
+			}
+			catch(Exception e) {
+				return BadRequest();
+			}
+		}
     }
 }
