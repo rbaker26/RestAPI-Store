@@ -89,7 +89,7 @@ public class Client extends Application {
 
             // System.out.println("\n\n****************** IT WORKS ******************\n\n");
 
-            loginController.applyScene(primaryStage);
+            realLogin.applyScene(primaryStage);
             primaryStage.show();
 
         } catch (Exception ex) {
