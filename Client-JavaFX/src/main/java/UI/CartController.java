@@ -2,9 +2,7 @@ package UI;
 
 import Messages.CartHandler;
 import Messages.ProductHandler;
-import data.Product;
-import data.ProductUpdate;
-import data.PurchaseInfo;
+import data.*;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
+
+import static java.lang.Integer.parseInt;
 
 public class CartController extends AbstractSceneController {
     private GridPane cartGrid;
@@ -27,10 +27,11 @@ public class CartController extends AbstractSceneController {
     private Button backButton;
     private Label yourCartLabel;
     private Label emailLabel;
-    private double mouseX;
-    private double mouseY;
 
     public void getPurchases() {
+
+
+
         this.cartUpdate = CartHandler.PurchaseCart(email);
         this.productList = ProductHandler.GetProducts();
         for (ProductUpdate p : cartUpdate) {
@@ -60,6 +61,8 @@ public class CartController extends AbstractSceneController {
     }
     public CartController(String email) {
 
+
+
         this.email = email;
         cartGrid = new GridPane();
         deleteItemButton = new Button("Delete Item From Cart");
@@ -69,6 +72,8 @@ public class CartController extends AbstractSceneController {
         backButton = new Button("Back");
         productInfoTableView = new TableView<>();
         scrollPane = new ScrollPane(productInfoTableView);
+
+        deleteItemButton.setOnAction(e -> deleteItemButtonClicked());
 
         TableColumn<PurchaseInfo, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setMinWidth(150);
@@ -98,9 +103,40 @@ public class CartController extends AbstractSceneController {
         cartGrid.setAlignment(Pos.CENTER);
 
         setRoot(cartGrid);
+
+        for(int i = 0; i < purchaseList.size(); i++) {
+            System.out.println(purchaseList.get(i).getDescription());
+            System.out.println(purchaseList.get(i).getProductId());
+            System.out.println(purchaseList.get(i).getPrice());
+            System.out.println(purchaseList.get(i).getQty());
+
+        }
+
     }
 
     public Button getBackButton() {
         return backButton;
+    }
+
+    public void deleteItemButtonClicked() {
+
+
+        ProductUpdate p = new ProductUpdate();
+        Product product = getProduct(p.productId);
+
+        CartHandler.RemoveCartUpdate(new RemoveCartUpdate(this.email, product.productId));
+
+        System.out.println("Removing: " + product.productId);
+
+        ObservableList<PurchaseInfo> productSelected, allProducts;
+
+
+        allProducts = productInfoTableView.getItems();
+
+        productSelected = productInfoTableView.getSelectionModel().getSelectedItems();
+
+        productSelected.forEach(allProducts::remove);
+
+
     }
 }
