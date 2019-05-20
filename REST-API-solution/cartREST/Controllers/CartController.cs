@@ -31,14 +31,8 @@ namespace cartREST.Controllers
                     throw new Exception();
 
                 // Set Items to cart items to purchased and return a cart (email, List<productUpdates>)
-                Cart cart = SQL_Interface.Instance.PurchaseCart(email);
-
-                // Send the Cart to Orders via PubNub
-                Messenger.Instance.SendMessage(cart, Messenger.MessageType.NewOrders);
-
-                // Send Quantity Updates to Products Inventory Service
-                Messenger.Instance.SendMessage(cart.ShoppingCart, Messenger.MessageType.ProductUpdates);
-
+                Cart cart = SQL_Interface.Instance.PurchaseCart(email, false);
+            
                 return cart.ShoppingCart;
             }
             catch (Exception)
@@ -66,7 +60,7 @@ namespace cartREST.Controllers
 
         // PUT api/values/email
         [HttpPut("{email}")]
-        public ActionResult<List<ProductUpdate>> Put(string email)
+        public ActionResult Put(string email)
         {
             if(email.Equals(""))
             {
@@ -74,7 +68,13 @@ namespace cartREST.Controllers
             }
             try
             {
-                return Ok(SQL_Interface.Instance.PurchaseCart(email));
+                Cart cart = SQL_Interface.Instance.PurchaseCart(email, true);
+                // Send the Cart to Orders via PubNub
+                Messenger.Instance.SendMessage(cart, Messenger.MessageType.NewOrders);
+
+                // Send Quantity Updates to Products Inventory Service
+                Messenger.Instance.SendMessage(cart.ShoppingCart, Messenger.MessageType.ProductUpdates);
+                return Ok();
             }
             catch(Exception)
             {
