@@ -66,30 +66,36 @@ public class CartController extends AbstractSceneController {
         this.email = email;
         cartGrid = new GridPane();
         deleteItemButton = new Button("Delete Item From Cart");
+        deleteItemButton.setStyle("-fx-font-weight: bold");
         checkoutButton = new Button("Proceed To Checkout Cart");
+        checkoutButton.setStyle("-fx-font-weight: bold");
         yourCartLabel = new Label("My Cart");
-        emailLabel = new Label();
+        yourCartLabel.setStyle("-fx-font: normal bold 15px 'arial'; -fx-text-fill: white");
+        emailLabel = new Label("Email: " + this.email);
+        emailLabel.setStyle("-fx-font: normal bold 10px 'arial'; -fx-text-fill: white");
         backButton = new Button("Back");
+        backButton.setStyle("-fx-font-weight: bold");
         productInfoTableView = new TableView<>();
         scrollPane = new ScrollPane(productInfoTableView);
+
+        Label blank1 = new Label(" ");
+        Label blank2 = new Label(" ");
 
         deleteItemButton.setOnAction(e -> deleteItemButtonClicked());
 
         TableColumn<PurchaseInfo, String> descriptionCol = new TableColumn<>("Description");
-        descriptionCol.setMinWidth(150);
+        descriptionCol.setMinWidth(155);
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         TableColumn<PurchaseInfo, Integer> quantityCol = new TableColumn<>("Quantity Selected");
-        quantityCol.setMinWidth(150);
+        quantityCol.setMinWidth(155);
         quantityCol.setCellValueFactory(new PropertyValueFactory<>("qty"));
-        TableColumn<PurchaseInfo, Float> priceCol = new TableColumn<>("Price");
-        priceCol.setMinWidth(150);
+        TableColumn<PurchaseInfo, Float> priceCol = new TableColumn<>("Price For One");
+        priceCol.setMinWidth(155);
         priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
 
         productInfoTableView.getColumns().addAll(descriptionCol, quantityCol, priceCol);
 
-//        productInfoTableView.getItems().add(new PurchaseInfo(new Product(1, "test 1", 5, 4.99f), 3));
-//        productInfoTableView.getItems().add(new PurchaseInfo(new Product(2, "test 2", 7, 3.99f), 2));
 
         cartGrid.getChildren().add(yourCartLabel);
         yourCartLabel.setAlignment(Pos.CENTER);
@@ -99,6 +105,8 @@ public class CartController extends AbstractSceneController {
         cartGrid.add(backButton, 0, 9, 1, 2);
         cartGrid.add(deleteItemButton, 4, 9, 1, 2);
         cartGrid.add(checkoutButton, 8, 9, 1, 2);
+
+        cartGrid.setStyle("-fx-background-color: linear-gradient(to bottom, #000066 44%, #9999ff 100%)");
 
         cartGrid.setAlignment(Pos.CENTER);
 
@@ -118,23 +126,27 @@ public class CartController extends AbstractSceneController {
         return backButton;
     }
 
+
+    //Remove the item selected from tableview
     public void deleteItemButtonClicked() {
 
 
-        ProductUpdate p = new ProductUpdate();
-        Product product = getProduct(p.productId);
-
-        CartHandler.RemoveCartUpdate(new RemoveCartUpdate(this.email, product.productId));
-
-        System.out.println("Removing: " + product.productId);
-
         ObservableList<PurchaseInfo> productSelected, allProducts;
-
 
         allProducts = productInfoTableView.getItems();
 
         productSelected = productInfoTableView.getSelectionModel().getSelectedItems();
 
+        PurchaseInfo item = (PurchaseInfo) productInfoTableView.getSelectionModel().getSelectedItem();
+
+
+        //Removing the item through the email used and the item's product id, from the cart
+        CartHandler.RemoveCartUpdate(new RemoveCartUpdate(this.email, item.getProductId()));
+
+        //Checking to make sure the right product id is being removed
+        System.out.println("Removing ProductID: " + item.getProductId());
+
+        //Seeing the item removed from tableview cart visually
         productSelected.forEach(allProducts::remove);
 
 

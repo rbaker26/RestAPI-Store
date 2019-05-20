@@ -57,6 +57,10 @@ public class Gridclass extends GridPane {
 
         quantityField.setPrefColumnCount(4);
 
+        Label addedToCartAlert = new Label("Added To Cart!");
+
+        addedToCartAlert.setVisible(false);
+
         this.setAlignment(Pos.CENTER);
         this.add(descriptionLabel,5, 0, 1, 2);
         this.add(descriptionObj, 7, 0, 1 , 3);
@@ -69,12 +73,24 @@ public class Gridclass extends GridPane {
         this.add(qtyEnteredLabel, 5, 10, 1, 1);
         this.add(quantityField, 7, 10, 1, 1);
         this.add(addToCartButton, 5, 12, 1, 2);
+        this.add(addedToCartAlert, 7, 12, 1 , 2);
 
         this.setMinSize(300, 200);
+
         this.addToCartButton.setOnAction(event -> {
-            if((Integer.parseInt(getQuantityObj()) <= 0)) {
+
+            if(Integer.parseInt(getQuantityObj()) <= 0) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("No More " + getDescriptionObj() + " In Stock!");
+                alert.setHeaderText("We currently do not have " + getDescriptionObj() + " in stock!");
+                alert.setContentText("We are sorry for the inconvenience.");
+
+                alert.showAndWait();
+
+            }
+
+            else if(Integer.parseInt(getQuantityField()) > Integer.parseInt(getQuantityObj()) ) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("We currently do not have enough " + getDescriptionObj() + " in stock!");
                 alert.setContentText("We are sorry for the inconvenience.");
 
                 alert.showAndWait();
@@ -84,6 +100,8 @@ public class Gridclass extends GridPane {
             else {
                 // this is where we need to add to a local cart
                 CartHandler.SendCartUpdate(new CartUpdate(this.email, new ProductUpdate(this.productId, parseInt(this.quantityField.getText()))));
+                System.out.println("Added to cart");
+                addedToCartAlert.setVisible(true);
             }
         });
     }
@@ -122,8 +140,8 @@ public class Gridclass extends GridPane {
 
     }
 
-    public TextField getQuantityField() {
-        return quantityField;
+    public String getQuantityField() {
+        return quantityField.getText();
     }
 
     @Override
