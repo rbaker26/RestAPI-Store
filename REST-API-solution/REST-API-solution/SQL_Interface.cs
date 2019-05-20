@@ -55,10 +55,11 @@ namespace ProductsREST
             MySqlConnectionStringBuilder mscsb = new MySqlConnectionStringBuilder
             {
                 Server = "68.5.123.182",
-                Database = "productsREST_db",
+                Database = "cartREST_db",
                 UserID = "recorder",
                 Password = "recorder0",
-                MinimumPoolSize = 100
+                MinimumPoolSize = 20,
+                MaximumPoolSize = 50
             };
 
             return new MySqlConnection(mscsb.ToString());
