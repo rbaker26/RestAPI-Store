@@ -12,7 +12,9 @@ namespace ordersREST
 {
     public sealed class SQL_Interface
     {
+
         //*****************************************************************************************
+        #region sql config region#region sql config region
         private static MySqlConnection m_dbConnection = null;
 
         private static readonly Lazy<SQL_Interface>
@@ -27,8 +29,7 @@ namespace ordersREST
         {
             // SQLiteConnection.CreateFile("MyDatabase.sqlite");
             // this.m_dbConnection = new SQLiteConnection("Data Source=C:\\Users\\007ds\\Documents\\GitHub\\RestAPI-Store\\ProductsREST\\ProductsREST\\products.db;Version=3;");
-            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=ordersREST_db; UID=recorder; password=recorder0");
-            m_dbConnection.Open();
+            m_dbConnection = MakeConnectionPool();
         }
         //*****************************************************************************************
 
@@ -48,19 +49,35 @@ namespace ordersREST
         }
         //*****************************************************************************************
 
+
+        //*****************************************************************************************
+        private static MySqlConnection MakeConnectionPool()
+        {
+            MySqlConnectionStringBuilder mscsb = new MySqlConnectionStringBuilder
+            {
+                Server = "68.5.123.182",
+                Database = "ordersREST_db",
+                UserID = "recorder",
+                Password = "recorder0",
+                MinimumPoolSize = 100
+            };
+
+            return new MySqlConnection(mscsb.ToString());
+        }
+        #endregion
+        //*****************************************************************************************
+
         public List<Order> GetOrders()
         {
             List<Order> orders = new List<Order>();
-            //products.Add(new Product(1, "Hi", 55, 128.20f));
 
-            // SQLiteDataReader sqlite_datareader;
-            MySqlDataReader mysql_datareader;
+            MySqlDataReader mysql_datareader = null; ;
+            MySqlCommand command = null;
             try
             {
                 string query = "SELECT * FROM orders";
-                //string query = "SELECT * FROM products";
-                // SQLiteCommand command = m_dbConnection.CreateCommand();
-                MySqlCommand command = m_dbConnection.CreateCommand();
+                command = m_dbConnection.CreateCommand();
+                command.Connection.Open();
                 command.CommandText = query;
 
                 mysql_datareader = command.ExecuteReader();
@@ -86,7 +103,6 @@ namespace ordersREST
                     orders.Add(temp);
                     temp = new Order();
                 }
-                mysql_datareader.Close();
             }
             catch (Exception e)
             {
@@ -97,6 +113,11 @@ namespace ordersREST
                 Console.Out.WriteLine("**********************************************************************\n\n");
 
             }
+            finally
+            {
+                mysql_datareader.Close();
+                command.Connection.Close();
+            }
 
 
             return orders;
@@ -104,13 +125,18 @@ namespace ordersREST
 
         public void AddNewOrder(string email, List<ProductUpdate> orderList)
         {
+            MySqlCommand command1 = null;
+            MySqlCommand command2 = null;
+            MySqlCommand command3 = null;
             try
             {
                 //string query = "SELECT * FROM products";
                 // SQLiteCommand command = m_dbConnection.CreateCommand();
                 using (MySqlTransaction trans = m_dbConnection.BeginTransaction())
                 {
-                    MySqlCommand command1 = m_dbConnection.CreateCommand();
+                    command1 = m_dbConnection.CreateCommand();
+                    command1.Connection.Open();
+
 
                     // Inset into `orders` table
                     string query1 = "INSERT INTO orders (user_id) VALUES ( (@email) );";
@@ -121,7 +147,8 @@ namespace ordersREST
 
 
                     // Get new order_id from the above query
-                    MySqlCommand command2 = m_dbConnection.CreateCommand();
+                    command2 = m_dbConnection.CreateCommand();
+                    command2.Connection.Open();
                     string query2 = "SELECT order_id FROM orders WHERE user_id = (@email) ORDER BY order_id DESC limit 1;";
                     command2.CommandText = query2;
                     command2.Parameters.Add("@email", MySqlDbType.String).Value = email;
@@ -137,7 +164,8 @@ namespace ordersREST
 
 
                     // Insert the list of product updates into the `orders_list` tables
-                    MySqlCommand command3 = m_dbConnection.CreateCommand();
+                    command3 = m_dbConnection.CreateCommand();
+                    command3.Connection.Open();
                     string query3 = "INSERT INTO orders_list (order_id, product_id, quantity) VALUES ( (@orderID), (@productID), (@quantity) );";
                     command3.CommandText = query3;
 
@@ -174,6 +202,12 @@ namespace ordersREST
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
 
+            }
+            finally
+            {
+                command1.Connection.Close();
+                command2.Connection.Close();
+                command3.Connection.Close();
             }
 
         }
