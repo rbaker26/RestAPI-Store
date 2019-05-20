@@ -34,8 +34,8 @@ public class CartController extends AbstractSceneController {
         this.cartUpdate = CartHandler.PurchaseCart(email);
         this.productList = ProductHandler.GetProducts();
         for (ProductUpdate p : cartUpdate) {
-            //Product product = ProductHandler.GetProduct(p.productId);
-            Product product = getProduct(p.productId);
+            Product product = ProductHandler.GetProduct(p.productId);
+            //Product product = getProduct(p.productId);
             System.out.println("Product: " + product.description);
             //array list
             purchaseList.add(new PurchaseInfo(product, p.quantityToBeRemoved));
