@@ -27,12 +27,9 @@ namespace cartREST.Controllers
                 return NotFound();
             try
             {
-                if (email.Equals(""))
-                    throw new Exception();
-
                 // Set Items to cart items to purchased and return a cart (email, List<productUpdates>)
                 Cart cart = SQL_Interface.Instance.PurchaseCart(email, false);
-            
+
                 return cart.ShoppingCart;
             }
             catch (Exception)
