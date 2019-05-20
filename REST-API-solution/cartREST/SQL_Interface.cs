@@ -13,6 +13,7 @@ namespace cartREST
     public sealed class SQL_Interface
     {
         //*****************************************************************************************
+        #region sql config region
         private static MySqlConnection m_dbConnection = null;
 
         private static readonly Lazy<SQL_Interface>
@@ -27,8 +28,7 @@ namespace cartREST
         {
             // SQLiteConnection.CreateFile("MyDatabase.sqlite");
             // this.m_dbConnection = new SQLiteConnection("Data Source=C:\\Users\\007ds\\Documents\\GitHub\\RestAPI-Store\\ProductsREST\\ProductsREST\\products.db;Version=3;");
-            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=cartREST_db; UID=recorder; password=recorder0");
-            m_dbConnection.Open();
+            m_dbConnection = MakeConnectionPool();
         }
         //*****************************************************************************************
 
@@ -47,16 +47,35 @@ namespace cartREST
 
         }
 
+        //*****************************************************************************************
+        private static MySqlConnection MakeConnectionPool()
+        {
+            MySqlConnectionStringBuilder mscsb = new MySqlConnectionStringBuilder
+            {
+                Server = "68.5.123.182",
+                Database = "cartREST_db",
+                UserID = "recorder",
+                Password = "recorder0",
+                MinimumPoolSize = 100
+            };
+
+            return new MySqlConnection(mscsb.ToString());
+        }
+        #endregion
+        //*****************************************************************************************
+
         public void AddProductToCart(string email, ProductUpdate productUpdate)
         {
             int ProductId = productUpdate.ProductId;
             int Quantity = productUpdate.QuantityToBeRemoved;
 
+            MySqlCommand command = null;
             try
             {
                 // Get Quantity of item in database
                 string query1 = "INSERT into cart( user_id, product_id, quantity, purchased ) VALUES ( (@user_id), (@product_id), (@quantity), (@purchased) );";
-                MySqlCommand command = m_dbConnection.CreateCommand();
+                command = m_dbConnection.CreateCommand();
+                command.Connection.Open();
                 command.CommandText = query1;
                 command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
                 command.Parameters.Add("@product_id", MySqlDbType.Int32).Value = ProductId;
@@ -74,24 +93,34 @@ namespace cartREST
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
+            finally
+            {
+                command.Connection.Close();
+            }
 
         }
 
 
         public Cart PurchaseCart(string email, bool purchase)
         {
-            MySqlDataReader mysql_datareader;
             List<ProductUpdate> updates = new List<ProductUpdate>();
+
+            MySqlCommand command1 = null;
+            MySqlCommand command2 = null;
+            MySqlDataReader mysql_datareader = null;
+
             try
             {
                 // Get Quantity of item in database
                 string query1 = "SELECT product_id, quantity FROM cart WHERE user_id = (@user_id) AND purchased = 0;";
-                MySqlCommand command = m_dbConnection.CreateCommand();
-                command.CommandText = query1;
-                command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
+                command1 = m_dbConnection.CreateCommand();
+                command1.Connection.Open();
+
+                command1.CommandText = query1;
+                command1.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
                 
 
-                mysql_datareader = command.ExecuteReader();
+                mysql_datareader = command1.ExecuteReader();
                 ProductUpdate temp = new ProductUpdate();
                 while (mysql_datareader.Read())
                 {
@@ -108,15 +137,16 @@ namespace cartREST
                     updates.Add(temp);
                     temp = new ProductUpdate();
                 }
-                mysql_datareader.Close();
+                
 
                 if (purchase)
                 {
                     string query2 = "UPDATE cart SET purchased = 1 WHERE user_id = (@user_id) AND purchased = 0;";
-                    command = m_dbConnection.CreateCommand();
-                    command.CommandText = query2;
-                    command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
-                    int row_affected = command.ExecuteNonQuery();
+                    command2 = m_dbConnection.CreateCommand();
+                    command2.Connection.Open();
+                    command2.CommandText = query2;
+                    command2.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
+                    int row_affected = command2.ExecuteNonQuery();
                 }
 
                // Console.Out.WriteLine("Rows affected:\t" + row_affected);
@@ -129,16 +159,24 @@ namespace cartREST
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
+            finally
+            {
+                mysql_datareader.Close();
+                command1.Connection.Close();
+                command2.Connection.Close();
+            }
 
             return new Cart(email, updates);
 
         }
         public void RemoveProduct(string email, int productID)
         {
+            MySqlCommand command = null;
             try
             {
             string query = "DELETE FROM cart WHERE user_id = (@user_id) AND product_id = (@product_id);";
-            MySqlCommand command = m_dbConnection.CreateCommand();
+            command = m_dbConnection.CreateCommand();
+            command.Connection.Open();
             command.CommandText = query;
             command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
             command.Parameters.Add("@product_id", MySqlDbType.Int32).Value = productID;
@@ -152,6 +190,10 @@ namespace cartREST
                 Console.Out.WriteLine(e.InnerException);
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
+            }
+            finally
+            {
+                command.Connection.Close();
             }
         }
         //*****************************************************************************************

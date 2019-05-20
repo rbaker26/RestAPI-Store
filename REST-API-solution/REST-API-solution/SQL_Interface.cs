@@ -28,8 +28,7 @@ namespace ProductsREST
         {
             // SQLiteConnection.CreateFile("MyDatabase.sqlite");
             // this.m_dbConnection = new SQLiteConnection("Data Source=C:\\Users\\007ds\\Documents\\GitHub\\RestAPI-Store\\ProductsREST\\ProductsREST\\products.db;Version=3;");
-            m_dbConnection = new MySqlConnection("Server=68.5.123.182; database=productsREST_db; UID=recorder; password=recorder0");
-            m_dbConnection.Open();
+            m_dbConnection = MakeConnectionPool();
         }
         //*****************************************************************************************
 
@@ -47,12 +46,11 @@ namespace ProductsREST
             }
 
         }
-        #endregion
-        //*****************************************************************************************
-
 
         //*****************************************************************************************
-        private static void MakeConnectionPool(MySqlCommand mySqlCommand)
+
+        //*****************************************************************************************
+        private static MySqlConnection MakeConnectionPool()
         {
             MySqlConnectionStringBuilder mscsb = new MySqlConnectionStringBuilder
             {
@@ -63,26 +61,27 @@ namespace ProductsREST
                 MinimumPoolSize = 100
             };
 
-            mySqlCommand.Connection = new MySqlConnection(mscsb.ToString());
-
+            return new MySqlConnection(mscsb.ToString());
         }
+        #endregion
         //*****************************************************************************************
 
 
+
+        //*****************************************************************************************
         public List<Product> GetProducts()
         {
             List<Product> products = new List<Product>();
             //products.Add(new Product(1, "Hi", 55, 128.20f));
 
-            // SQLiteDataReader sqlite_datareader;
-            MySqlDataReader mysql_datareader;
+            MySqlDataReader mysql_datareader = null;
+            MySqlCommand command = null;
             try
             {
                 string query = "SELECT product_id, description, quantity, price FROM products";
                 //string query = "SELECT * FROM products";
-                // SQLiteCommand command = m_dbConnection.CreateCommand();
-                MySqlCommand command = m_dbConnection.CreateCommand();
-                MakeConnectionPool(command);
+                //SQLiteCommand command = m_dbConnection.CreateCommand();
+                command = m_dbConnection.CreateCommand();
                 command.Connection.Open();
                 command.CommandText = query;
 
@@ -109,8 +108,6 @@ namespace ProductsREST
                     products.Add(temp);
                     temp = new Product();
                 }
-                mysql_datareader.Close();
-                command.Connection.Close();
             }
             catch (Exception e)
             {
@@ -120,24 +117,32 @@ namespace ProductsREST
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
+            finally
+            {
+                mysql_datareader.Close();
+                command.Connection.Close();
+            }
 
 
             return products;
         }
+        //*****************************************************************************************
 
+
+
+        //*****************************************************************************************
         public Product GetProductById(int productId)
         {
             Product temp = new Product();
-            //products.Add(new Product(1, "Hi", 55, 128.20f));
 
-            // SQLiteDataReader sqlite_datareader;
-            MySqlDataReader mysql_datareader;
+            MySqlDataReader mysql_datareader = null;
+            MySqlCommand command = null;
             try
             {
                 string query = "SELECT product_id, description, quantity, price FROM products WHERE product_id = (@id)";
-                //string query = "SELECT * FROM products";
-                // SQLiteCommand command = m_dbConnection.CreateCommand();
-                MySqlCommand command = m_dbConnection.CreateCommand();
+
+                command = m_dbConnection.CreateCommand();
+                command.Connection.Open();
                 command.CommandText = query;
                 command.Parameters.Add("@id", MySqlDbType.Int32).Value = productId;
 
@@ -159,7 +164,6 @@ namespace ProductsREST
                     //*************************
 
                 }
-                mysql_datareader.Close();
             }
             catch (Exception e)
             {
@@ -169,17 +173,21 @@ namespace ProductsREST
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
+            finally
+            {
+                mysql_datareader.Close();
+                command.Connection.Close();
+            }
+
 
             return temp;
         }
+        //*****************************************************************************************
 
 
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="newProduct"></param>
-		/// <returns></returns>
+
+        //*****************************************************************************************
 		public int AddNewItem(Product newProduct) {
 
 			try {
@@ -187,7 +195,7 @@ namespace ProductsREST
 
 				MySqlCommand insertCommand = m_dbConnection.CreateCommand();
 				try {
-					MakeConnectionPool(insertCommand);
+					//MakeConnectionPool(insertCommand);
 					insertCommand.Connection.Open();
 
 					insertCommand.CommandText = "INSERT INTO products (description, quantity, price, photo) VALUES (@desc, @qty, @price, 0)";
@@ -204,7 +212,7 @@ namespace ProductsREST
 
 				MySqlCommand readCommand = m_dbConnection.CreateCommand();
 				try {
-					MakeConnectionPool(readCommand);
+					//MakeConnectionPool(readCommand);
 					readCommand.Connection.Open();
 
 					readCommand.CommandText = "SELECT product_id FROM products WHERE description = @desc ORDER BY product_id DESC LIMIT 1";
@@ -235,7 +243,9 @@ namespace ProductsREST
 				throw new InvalidOperationException("Failed to insert item", e);
 			}
 		}
+        //*****************************************************************************************
 
+        //*****************************************************************************************
 		public void ChangeItem(int id, Product changedProduct) {
 			try {
 				if(id != changedProduct.ProductId) {
@@ -244,7 +254,7 @@ namespace ProductsREST
 
 				MySqlCommand updateCommand = m_dbConnection.CreateCommand();
 				try {
-					MakeConnectionPool(updateCommand);
+					//MakeConnectionPool(updateCommand);
 					updateCommand.Connection.Open();
 
 					updateCommand.CommandText = "UPDATE products SET description = @desc, quantity = @qty, price = @price WHERE product_id = @id";
@@ -283,20 +293,22 @@ namespace ProductsREST
 				throw new InvalidOperationException("Failed to update item", e);
 			}
 		}
+        //*****************************************************************************************
 
+        //*****************************************************************************************
         public void ReduceItemQuantity(ProductUpdate productUpdate)
         {
             int ProductId = productUpdate.ProductId;
             int Quantity = productUpdate.QuantityToBeRemoved;
 
-            MySqlDataReader mysql_datareader;
+            MySqlDataReader mysql_datareader = null;
+            MySqlCommand command = null;
             int orgQuantity = -1;
             try
             {
                 // Get Quantity of item in database
                 string query1 = "SELECT quantity FROM products WHERE product_id = (@id) LIMIT 1;";
-                MySqlCommand command = m_dbConnection.CreateCommand();
-                MakeConnectionPool(command);
+                command = m_dbConnection.CreateCommand();
                 command.Connection.Open();
                 command.CommandText = query1;
                 command.Parameters.Add("@id", MySqlDbType.Int32).Value = ProductId;
@@ -306,18 +318,20 @@ namespace ProductsREST
                 {
                     orgQuantity = mysql_datareader.GetInt32(0);
                 }
-                mysql_datareader.Close();
+                
 
                 // Make sure the is enough inventory
                 if (orgQuantity < Quantity)
                 {
-                   // throw new ArgumentException("Purchased qantity is greater than stored quantity", "Quantity");
+                    // throw new ArgumentException("Purchased qantity is greater than stored quantity", "Quantity");
                 }
+                command.Connection.Close();
 
 
                 // Reduce the quantity of the item by n
                 string query2 = "UPDATE products SET quantity = (@newQuantity) WHERE product_id = (@id);";
                 command = m_dbConnection.CreateCommand();
+                command.Connection.Open();
                 command.CommandText = query2;
 
                 command.Parameters.Add("@id", MySqlDbType.Int32).Value = ProductId;
@@ -326,7 +340,6 @@ namespace ProductsREST
 
 
                 int rows_affected = command.ExecuteNonQuery();
-                command.Connection.Close();
                 //Console.Out.WriteLine("Rows Affected:\t" + rows_affected);
             }
             catch (Exception e)
@@ -337,10 +350,13 @@ namespace ProductsREST
                 Console.Out.WriteLine(e.Source);
                 Console.Out.WriteLine("**********************************************************************\n\n");
             }
-
-            
-
+            finally
+            {
+                mysql_datareader.Close();
+                command.Connection.Close();
+            }
         }
+        //*****************************************************************************************
 
     }
 }
