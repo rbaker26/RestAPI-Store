@@ -186,6 +186,115 @@ namespace ProductsREST
 
 
 
+
+        //*****************************************************************************************
+		public int AddNewItem(Product newProduct) {
+
+			try {
+				int resultID;
+
+				MySqlCommand insertCommand = m_dbConnection.CreateCommand();
+				try {
+					//MakeConnectionPool(insertCommand);
+					insertCommand.Connection.Open();
+
+					insertCommand.CommandText = "INSERT INTO products (description, quantity, price, photo) VALUES (@desc, @qty, @price, 0)";
+					insertCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
+					insertCommand.Parameters.Add("@qty", MySqlDbType.Int32).Value = newProduct.Quantity;
+					insertCommand.Parameters.Add("@price", MySqlDbType.Float).Value = newProduct.Price;
+
+					insertCommand.ExecuteNonQuery();
+				}
+				finally {
+					insertCommand?.Connection?.Close();
+				}
+
+
+				MySqlCommand readCommand = m_dbConnection.CreateCommand();
+				try {
+					//MakeConnectionPool(readCommand);
+					readCommand.Connection.Open();
+
+					readCommand.CommandText = "SELECT product_id FROM products WHERE description = @desc ORDER BY product_id DESC LIMIT 1";
+					readCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
+
+					using(MySqlDataReader reader = readCommand.ExecuteReader()) {
+						if(reader.Read()) {
+							resultID = reader.GetInt32(0);
+						}
+						else {
+							throw new Exception("Unable to retrieve newly inserted item. WUT?");
+						}
+					}
+				}
+				finally {
+					readCommand?.Connection?.Close();
+				}
+
+				return resultID;
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+				throw new InvalidOperationException("Failed to insert item", e);
+			}
+		}
+        //*****************************************************************************************
+
+        //*****************************************************************************************
+		public void ChangeItem(int id, Product changedProduct) {
+			try {
+				if(id != changedProduct.ProductId) {
+					throw new InvalidOperationException("Chosen ID to update doesn't match the ID of the product passed in");
+				}
+
+				MySqlCommand updateCommand = m_dbConnection.CreateCommand();
+				try {
+					//MakeConnectionPool(updateCommand);
+					updateCommand.Connection.Open();
+
+					updateCommand.CommandText = "UPDATE products SET description = @desc, quantity = @qty, price = @price WHERE product_id = @id";
+					updateCommand.Parameters.Add("@desc", MySqlDbType.String).Value = changedProduct.Description;
+					updateCommand.Parameters.Add("@qty", MySqlDbType.Int32).Value = changedProduct.Quantity;
+					updateCommand.Parameters.Add("@price", MySqlDbType.Float).Value = changedProduct.Price;
+					updateCommand.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
+
+					int rowsEffected = updateCommand.ExecuteNonQuery();
+
+					if(rowsEffected == 0) {
+						throw new ArgumentOutOfRangeException("id");
+					}
+				}
+				finally {
+					updateCommand?.Connection?.Close();
+				}
+
+			}
+			catch(ArgumentOutOfRangeException e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+				throw e;
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+				throw new InvalidOperationException("Failed to update item", e);
+			}
+		}
+        //*****************************************************************************************
+
         //*****************************************************************************************
         public void ReduceItemQuantity(ProductUpdate productUpdate)
         {
