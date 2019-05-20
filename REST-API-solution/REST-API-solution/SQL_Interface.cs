@@ -186,25 +186,41 @@ namespace ProductsREST
 				int resultID;
 
 				MySqlCommand insertCommand = m_dbConnection.CreateCommand();
-				insertCommand.CommandText = "INSERT INTO products (description, quantity, price, photo) VALUES (@desc, @qty, @price, 0)";
-				insertCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
-				insertCommand.Parameters.Add("@qty", MySqlDbType.Int32).Value = newProduct.Quantity;
-				insertCommand.Parameters.Add("@price", MySqlDbType.Float).Value = newProduct.Price;
+				try {
+					MakeConnectionPool(insertCommand);
+					insertCommand.Connection.Open();
 
-				insertCommand.ExecuteNonQuery();
+					insertCommand.CommandText = "INSERT INTO products (description, quantity, price, photo) VALUES (@desc, @qty, @price, 0)";
+					insertCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
+					insertCommand.Parameters.Add("@qty", MySqlDbType.Int32).Value = newProduct.Quantity;
+					insertCommand.Parameters.Add("@price", MySqlDbType.Float).Value = newProduct.Price;
+
+					insertCommand.ExecuteNonQuery();
+				}
+				finally {
+					insertCommand.Connection.Close();
+				}
 
 
 				MySqlCommand readCommand = m_dbConnection.CreateCommand();
-				readCommand.CommandText = "SELECT product_id FROM products WHERE description = @desc ORDER BY product_id DESC LIMIT 1";
-				readCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
+				try {
+					MakeConnectionPool(readCommand);
+					readCommand.Connection.Open();
 
-				using(MySqlDataReader reader = readCommand.ExecuteReader()) {
-					if(reader.Read()) {
-						resultID = reader.GetInt32(0);
+					readCommand.CommandText = "SELECT product_id FROM products WHERE description = @desc ORDER BY product_id DESC LIMIT 1";
+					readCommand.Parameters.Add("@desc", MySqlDbType.String).Value = newProduct.Description;
+
+					using(MySqlDataReader reader = readCommand.ExecuteReader()) {
+						if(reader.Read()) {
+							resultID = reader.GetInt32(0);
+						}
+						else {
+							throw new Exception("Unable to retrieve newly inserted item. WUT?");
+						}
 					}
-					else {
-						throw new Exception("Unable to retrieve newly inserted item. WUT?");
-					}
+				}
+				finally {
+					readCommand.Connection.Close();
 				}
 
 				return resultID;
@@ -227,16 +243,24 @@ namespace ProductsREST
 				}
 
 				MySqlCommand updateCommand = m_dbConnection.CreateCommand();
-				updateCommand.CommandText = "UPDATE products SET description = @desc, quantity = @qty, price = @price WHERE product_id = @id";
-				updateCommand.Parameters.Add("@desc", MySqlDbType.String).Value = changedProduct.Description;
-				updateCommand.Parameters.Add("@qty", MySqlDbType.Int32).Value = changedProduct.Quantity;
-				updateCommand.Parameters.Add("@price", MySqlDbType.Float).Value = changedProduct.Price;
-				updateCommand.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
+				try {
+					MakeConnectionPool(updateCommand);
+					updateCommand.Connection.Open();
 
-				int rowsEffected = updateCommand.ExecuteNonQuery();
+					updateCommand.CommandText = "UPDATE products SET description = @desc, quantity = @qty, price = @price WHERE product_id = @id";
+					updateCommand.Parameters.Add("@desc", MySqlDbType.String).Value = changedProduct.Description;
+					updateCommand.Parameters.Add("@qty", MySqlDbType.Int32).Value = changedProduct.Quantity;
+					updateCommand.Parameters.Add("@price", MySqlDbType.Float).Value = changedProduct.Price;
+					updateCommand.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
 
-				if(rowsEffected == 0) {
-					throw new ArgumentOutOfRangeException("id");
+					int rowsEffected = updateCommand.ExecuteNonQuery();
+
+					if(rowsEffected == 0) {
+						throw new ArgumentOutOfRangeException("id");
+					}
+				}
+				finally {
+					updateCommand.Connection.Close();
 				}
 
 			}
