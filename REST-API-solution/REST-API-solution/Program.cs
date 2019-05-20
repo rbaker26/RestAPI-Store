@@ -47,8 +47,8 @@ namespace ProductsREST
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>().UseKestrel().UseContentRoot(Directory.GetCurrentDirectory())
-                //.UseUrls("http://*:5001");
-                .UseUrls("http://localhost:5001");
+                .UseUrls("http://*:5001");
+                //.UseUrls("http://localhost:5001");
 
 
 
