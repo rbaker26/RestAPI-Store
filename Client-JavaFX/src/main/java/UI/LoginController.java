@@ -43,6 +43,10 @@ public class LoginController extends AbstractSceneController {
 
             seeCart = new Button("Go To My Cart");
             signOut = new Button("Sign Out");
+
+            seeCart.setStyle("-fx-font-weight: bold");
+            signOut.setStyle("-fx-font-weight: bold");
+
         /**
          * USING GSON FOR JSON STRING
          */
@@ -75,12 +79,20 @@ public class LoginController extends AbstractSceneController {
             grid.setHgap(3);
             grid.setVgap(3);
             grid.setAlignment(Pos.CENTER);
+            grid.setStyle("-fx-background-color: linear-gradient(to bottom, #000066 44%, #9999ff 100%)");
 
             Label emailLabel = new Label("Email: ");
 
-            Label instructLabel = new Label("Hello " + this.usersEmail);
-            Label instructLabel2 = new Label("Select a product and type in how many");
-            Label instructLabel3 = new Label("you would like to add to your cart.");
+           // Label instructLabel = new Label("Hello " + this.usersEmail);
+          //  Label instructLabel2 = new Label("Select a product and type in how many");
+           // Label instructLabel3 = new Label("you would like to add to your cart.");
+
+            Label greetLabel = new Label("Hello and Welcome!" + "\n" +
+                                        "Your email is " + this.usersEmail + "\n" +
+                                        "Select a product and type in how many" + "\n" +
+                                        "you would like to add to your cart");
+
+            greetLabel.setStyle("-fx-font: normal bold 13px 'arial'; -fx-text-fill: white");
 
             emailField = new TextField();
             emailField.setPrefColumnCount(10);
@@ -129,11 +141,11 @@ public class LoginController extends AbstractSceneController {
             Pane test = new Pane();
             ScrollPane scrollPane = new ScrollPane(productList);
 
-            grid.add(instructLabel, 16, 0, 1, 2);
+            grid.add(signOut, 16, 0, 1, 2);
 
-            grid.add(instructLabel2, 16, 2, 1, 2);
+           // grid.add(instructLabel2, 16, 2, 1, 2);
 
-            grid.add(instructLabel3, 16, 4, 2, 2);
+           // grid.add(instructLabel3, 16, 4, 2, 2);
 
            // grid.add(enterButton, 20, 2, 1, 2);
 
@@ -141,9 +153,8 @@ public class LoginController extends AbstractSceneController {
 
             grid.add(seeCart, 2, 0, 1 ,2);
 
-            grid.add(signOut,0, 0, 1, 2);
+            grid.add(greetLabel,0, 0, 1, 2);
 
-            //grid.add(test, 1, 5, 5, 5);
 
             productList.setOnMouseMoved(new EventHandler<MouseEvent>() {
                 @Override
@@ -155,32 +166,15 @@ public class LoginController extends AbstractSceneController {
 
             Label blankLabel = new Label("No content");
 
-         /** //PROBLEM: popOver shows up blank for every item clicked in the listView.***************
-         * //PROBLEM 2: WHEN USING THE SELECTION METHOD IN THE JAVA TEXT BOOK, PG. 650,
-          *             Integer i is suppose to be an Object i,
-          *             but interator for desgrid[] should be int or Integer.
-         * THIS METHOD SHOULD ALLOW US TO DISPLAY THE CONTENTS OF POPOVER
-         * WHICH CHANGES FOR DIFFERENT SELECTED ITEMS IN THE LIST VIEW.
-         */
-
 
             productList.getSelectionModel().selectedItemProperty().addListener( ov -> {
 
-                /**
-                popUp.setContentNode(blankLabel);
-                ObservableList<Integer> test = productList.getSelectionModel().getSelectedIndices();
-                for(Integer i: test) {
-                    popUp.setContentNode(desgrid[i]);
-                }
-
- */             //test.getChildren().add(desgrid[productList.getSelectionModel().getSelectedIndex()]);
 
                 popUp.setContentNode(desgrid[productList.getSelectionModel().getSelectedIndex()]);
                 popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
 
 
             });
-
 
 
             setRoot(grid);
