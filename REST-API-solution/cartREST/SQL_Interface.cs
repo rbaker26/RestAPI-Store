@@ -78,7 +78,7 @@ namespace cartREST
         }
 
 
-        public Cart PurchaseCart(string email)
+        public Cart PurchaseCart(string email, bool purchase)
         {
             MySqlDataReader mysql_datareader;
             List<ProductUpdate> updates = new List<ProductUpdate>();
@@ -110,12 +110,14 @@ namespace cartREST
                 }
                 mysql_datareader.Close();
 
-
-                string query2 = "UPDATE cart SET purchased = 1 WHERE user_id = (@user_id) AND purchased = 0;";
-                command = m_dbConnection.CreateCommand();
-                command.CommandText = query2;
-                command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
-                int row_affected = command.ExecuteNonQuery();
+                if (purchase)
+                {
+                    string query2 = "UPDATE cart SET purchased = 1 WHERE user_id = (@user_id) AND purchased = 0;";
+                    command = m_dbConnection.CreateCommand();
+                    command.CommandText = query2;
+                    command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
+                    int row_affected = command.ExecuteNonQuery();
+                }
 
                // Console.Out.WriteLine("Rows affected:\t" + row_affected);
             }

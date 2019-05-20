@@ -50,6 +50,25 @@ namespace ProductsREST
         #endregion
         //*****************************************************************************************
 
+
+        //*****************************************************************************************
+        private static void MakeConnectionPool(MySqlCommand mySqlCommand)
+        {
+            MySqlConnectionStringBuilder mscsb = new MySqlConnectionStringBuilder
+            {
+                Server = "68.5.123.182",
+                Database = "productsREST_db",
+                UserID = "recorder",
+                Password = "recorder0",
+                MinimumPoolSize = 100
+            };
+
+            mySqlCommand.Connection = new MySqlConnection(mscsb.ToString());
+
+        }
+        //*****************************************************************************************
+
+
         public List<Product> GetProducts()
         {
             List<Product> products = new List<Product>();
@@ -63,6 +82,8 @@ namespace ProductsREST
                 //string query = "SELECT * FROM products";
                 // SQLiteCommand command = m_dbConnection.CreateCommand();
                 MySqlCommand command = m_dbConnection.CreateCommand();
+                MakeConnectionPool(command);
+                command.Connection.Open();
                 command.CommandText = query;
 
                 mysql_datareader = command.ExecuteReader();
@@ -89,6 +110,7 @@ namespace ProductsREST
                     temp = new Product();
                 }
                 mysql_datareader.Close();
+                command.Connection.Close();
             }
             catch (Exception e)
             {
@@ -250,6 +272,8 @@ namespace ProductsREST
                 // Get Quantity of item in database
                 string query1 = "SELECT quantity FROM products WHERE product_id = (@id) LIMIT 1;";
                 MySqlCommand command = m_dbConnection.CreateCommand();
+                MakeConnectionPool(command);
+                command.Connection.Open();
                 command.CommandText = query1;
                 command.Parameters.Add("@id", MySqlDbType.Int32).Value = ProductId;
 
@@ -278,6 +302,7 @@ namespace ProductsREST
 
 
                 int rows_affected = command.ExecuteNonQuery();
+                command.Connection.Close();
                 //Console.Out.WriteLine("Rows Affected:\t" + rows_affected);
             }
             catch (Exception e)
