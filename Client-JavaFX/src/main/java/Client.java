@@ -49,22 +49,24 @@ public class Client extends Application {
 
             primaryStage.setHeight(initHeight);
             primaryStage.setWidth(initWidth);
+            loginController = new LoginController();
+            cartController = new CartController();
 
 
-            loginController = new LoginController(userEmail);
-            cartController = new CartController(userEmail);
             realLogin = new RealLogin();
 
             userEmail = realLogin.getEmailField();
 
             realLogin.getEnterButton().setOnAction(value -> {
-                loginController.applyScene(primaryStage);
-            });
-
-
-
-            loginController.getEnterButton().setOnAction(value -> {
-                System.out.println("Entering with email...");
+                userEmail = realLogin.getEmailField();
+                if(!userEmail.equals("")) {
+                    loginController.setEmail(userEmail);
+                    cartController.setEmail(userEmail);
+                    loginController.applyScene(primaryStage);
+                }
+                else {
+                    System.out.println("Please enter email");
+                }
             });
 
             /**

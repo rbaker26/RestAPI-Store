@@ -91,16 +91,14 @@ public class ProductHandler {
             System.out.println("Output from Server .... \n");
             String json= "";
             while ((output = br.readLine()) != null) {
-                System.out.println(output);
+                System.out.println("in while loop, output: " + output);
                 json = output;
             }
-            System.out.println(output);
             System.out.println(json);
             conn.disconnect();
 
             Gson gson = new Gson();
             Product product = gson.fromJson(json, Product.class);
-            //ProductUpdate productUpdate = gson.fromJson(jsonStr, ProductUpdate.class);
 
             return product;
 

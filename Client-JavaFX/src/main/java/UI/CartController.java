@@ -3,8 +3,6 @@ package UI;
 import Messages.CartHandler;
 import Messages.ProductHandler;
 import data.*;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -12,10 +10,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 
-import static java.lang.Integer.parseInt;
-
 public class CartController extends AbstractSceneController {
-    private GridPane cartGrid;
+    private GridPane cartGrid = new GridPane();
     private TableView productInfoTableView;
     private ArrayList<ProductUpdate> cartUpdate;
     private ArrayList<Product> productList;
@@ -26,61 +22,29 @@ public class CartController extends AbstractSceneController {
     private Button checkoutButton;
     private Button backButton;
     private Label yourCartLabel;
-    private Label emailLabel;
+    private Label emailLabel = new Label();
 
     public void getPurchases() {
-
-
-
-        this.cartUpdate = CartHandler.PurchaseCart(email);
-        this.productList = ProductHandler.GetProducts();
+        System.out.println("In get purchases requesting for email: " + email);
+        this.cartUpdate = CartHandler.GetCart(email);
         for (ProductUpdate p : cartUpdate) {
+            System.out.println("Requesting productId: " + p.productId);
             Product product = ProductHandler.GetProduct(p.productId);
-            //Product product = getProduct(p.productId);
-            System.out.println("Product: " + product.description);
-            //array list
-            purchaseList.add(new PurchaseInfo(product, p.quantityToBeRemoved));
-        }
-        System.out.println("ADDING TO TABLEVIEW: size=" + purchaseList.size());
-        for(PurchaseInfo p : purchaseList) {
-            System.out.println("IN LOOP Product: " + p.getDescription());
-            System.out.println("IN LOOP Qty: " + p.getQty());
-            System.out.println("IN LOOP Price: " + p.getPrice());
-            productInfoTableView.getItems().add(p);
+            productInfoTableView.getItems().add(new PurchaseInfo(product, p.quantityToBeRemoved));
         }
     }
-
-    public Product getProduct(int productId) {
-        System.out.println("Looking for productId: " + productId);
-        for(Product p : productList) {
-            if(p.productId == productId) {
-                return p;
-            }
-        }
-        return null;
-    }
-    public CartController(String email) {
-
-
-
-        this.email = email;
-        cartGrid = new GridPane();
+    public CartController() {
         deleteItemButton = new Button("Delete Item From Cart");
         deleteItemButton.setStyle("-fx-font-weight: bold");
         checkoutButton = new Button("Proceed To Checkout Cart");
         checkoutButton.setStyle("-fx-font-weight: bold");
         yourCartLabel = new Label("My Cart");
         yourCartLabel.setStyle("-fx-font: normal bold 15px 'arial'; -fx-text-fill: white");
-        emailLabel = new Label("Email: " + this.email);
         emailLabel.setStyle("-fx-font: normal bold 10px 'arial'; -fx-text-fill: white");
         backButton = new Button("Back");
         backButton.setStyle("-fx-font-weight: bold");
         productInfoTableView = new TableView<>();
         scrollPane = new ScrollPane(productInfoTableView);
-
-        Label blank1 = new Label(" ");
-        Label blank2 = new Label(" ");
-
         deleteItemButton.setOnAction(e -> deleteItemButtonClicked());
 
         TableColumn<PurchaseInfo, String> descriptionCol = new TableColumn<>("Description");
@@ -126,29 +90,22 @@ public class CartController extends AbstractSceneController {
         return backButton;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+        emailLabel.setText("Email: " + this.email);
+    }
 
     //Remove the item selected from tableview
     public void deleteItemButtonClicked() {
-
-
         ObservableList<PurchaseInfo> productSelected, allProducts;
-
         allProducts = productInfoTableView.getItems();
-
         productSelected = productInfoTableView.getSelectionModel().getSelectedItems();
-
         PurchaseInfo item = (PurchaseInfo) productInfoTableView.getSelectionModel().getSelectedItem();
-
-
         //Removing the item through the email used and the item's product id, from the cart
         CartHandler.RemoveCartUpdate(new RemoveCartUpdate(this.email, item.getProductId()));
-
         //Checking to make sure the right product id is being removed
         System.out.println("Removing ProductID: " + item.getProductId());
-
         //Seeing the item removed from tableview cart visually
         productSelected.forEach(allProducts::remove);
-
-
     }
 }

@@ -56,12 +56,16 @@ public class CartHandler {
         return true;
     }
 
-    public static ArrayList<ProductUpdate> PurchaseCart(String email)
+    public static void PurchaseCart(String email) {
+
+    }
+    public static ArrayList<ProductUpdate> GetCart(String email)
     {
 
         System.out.println("In request body");
         try
         {
+            System.out.println("Sending GET request to http://68.5.123.182:5002/api/cart/" + email);
             URL url = new URL("http://68.5.123.182:5002/api/cart/" + email);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
