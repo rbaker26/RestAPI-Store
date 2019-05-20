@@ -84,6 +84,10 @@ public class Client extends Application {
                 loginController.applyScene(primaryStage);
             });
 
+            cartController.getPurchaseButton().setOnAction(value -> {
+                CartHandler.PurchaseCart(this.userEmail);
+                loginController.applyScene(primaryStage);
+            });
             loginController.getSignOut().setOnAction(value -> {
                 realLogin.applyScene(primaryStage);
             });

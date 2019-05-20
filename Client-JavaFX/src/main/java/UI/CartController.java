@@ -27,6 +27,7 @@ public class CartController extends AbstractSceneController {
     public void getPurchases() {
         System.out.println("In get purchases requesting for email: " + email);
         this.cartUpdate = CartHandler.GetCart(email);
+        productInfoTableView.getItems().clear();
         for (ProductUpdate p : cartUpdate) {
             System.out.println("Requesting productId: " + p.productId);
             Product product = ProductHandler.GetProduct(p.productId);
@@ -107,5 +108,9 @@ public class CartController extends AbstractSceneController {
         System.out.println("Removing ProductID: " + item.getProductId());
         //Seeing the item removed from tableview cart visually
         productSelected.forEach(allProducts::remove);
+    }
+
+    public Button getPurchaseButton() {
+        return this.checkoutButton;
     }
 }

@@ -56,9 +56,29 @@ public class CartHandler {
         return true;
     }
 
-    public static void PurchaseCart(String email) {
+    public static boolean  PurchaseCart(String email)
+    {
+        try {
+            System.out.println("Sending PUT request to http://68.5.123.182:5002/api/cart/" + email);
+            URL url = new URL("http://68.5.123.182:5002/api/cart/" + email);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+            out.write("");
+            out.close();
+            if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new Exception("Failed purchase..." + conn.getResponseCode());
+            }
 
+            conn.disconnect();
+        }
+        catch(Exception ex) {
+            return false;
+        }
+        return true;
     }
+
     public static ArrayList<ProductUpdate> GetCart(String email)
     {
 

@@ -98,6 +98,7 @@ public class LoginController extends AbstractSceneController {
 
     public void populateListView() {
         getProducts();
+        productList.getItems().clear();
         productList.setPrefSize(400, 400);
         for(int i = 0; i < productUpdate.size(); i++) {
             System.out.println(productUpdate.get(i).description);
