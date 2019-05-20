@@ -206,7 +206,7 @@ namespace ProductsREST
 					insertCommand.ExecuteNonQuery();
 				}
 				finally {
-					insertCommand.Connection.Close();
+					insertCommand?.Connection?.Close();
 				}
 
 
@@ -228,7 +228,7 @@ namespace ProductsREST
 					}
 				}
 				finally {
-					readCommand.Connection.Close();
+					readCommand?.Connection?.Close();
 				}
 
 				return resultID;
@@ -270,7 +270,7 @@ namespace ProductsREST
 					}
 				}
 				finally {
-					updateCommand.Connection.Close();
+					updateCommand?.Connection?.Close();
 				}
 
 			}
