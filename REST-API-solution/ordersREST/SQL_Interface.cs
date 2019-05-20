@@ -56,7 +56,7 @@ namespace ordersREST
             MySqlConnectionStringBuilder mscsb = new MySqlConnectionStringBuilder
             {
                 Server = "68.5.123.182",
-                Database = "cartREST_db",
+                Database = "ordersREST_db",
                 UserID = "recorder",
                 Password = "recorder0",
                 MinimumPoolSize = 20,
