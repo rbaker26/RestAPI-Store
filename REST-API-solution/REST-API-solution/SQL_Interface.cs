@@ -119,8 +119,8 @@ namespace ProductsREST
             }
             finally
             {
-                mysql_datareader.Close();
-                command.Connection.Close();
+                mysql_datareader?.Close();
+                command?.Connection?.Close();
             }
 
 
@@ -175,8 +175,8 @@ namespace ProductsREST
             }
             finally
             {
-                mysql_datareader.Close();
-                command.Connection.Close();
+                mysql_datareader?.Close();
+                command?.Connection?.Close();
             }
 
 
@@ -352,8 +352,8 @@ namespace ProductsREST
             }
             finally
             {
-                mysql_datareader.Close();
-                command.Connection.Close();
+                mysql_datareader?.Close();
+                command?.Connection?.Close();
             }
         }
         //*****************************************************************************************

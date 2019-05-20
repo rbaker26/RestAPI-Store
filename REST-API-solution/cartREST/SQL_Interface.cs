@@ -95,7 +95,7 @@ namespace cartREST
             }
             finally
             {
-                command.Connection.Close();
+                command?.Connection?.Close();
             }
 
         }
@@ -118,7 +118,7 @@ namespace cartREST
 
                 command1.CommandText = query1;
                 command1.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
-                
+
 
                 mysql_datareader = command1.ExecuteReader();
                 ProductUpdate temp = new ProductUpdate();
@@ -161,9 +161,9 @@ namespace cartREST
             }
             finally
             {
-                mysql_datareader.Close();
-                command1.Connection.Close();
-                command2.Connection.Close();
+                mysql_datareader?.Close();
+                command1?.Connection?.Close();
+                command2?.Connection?.Close();
             }
 
             return new Cart(email, updates);
@@ -193,7 +193,7 @@ namespace cartREST
             }
             finally
             {
-                command.Connection.Close();
+                command?.Connection?.Close();
             }
         }
         //*****************************************************************************************

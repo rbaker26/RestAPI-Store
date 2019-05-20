@@ -115,8 +115,8 @@ namespace ordersREST
             }
             finally
             {
-                mysql_datareader.Close();
-                command.Connection.Close();
+                mysql_datareader?.Close();
+                command?.Connection?.Close();
             }
 
 
@@ -205,9 +205,9 @@ namespace ordersREST
             }
             finally
             {
-                command1.Connection.Close();
-                command2.Connection.Close();
-                command3.Connection.Close();
+                command1?.Connection?.Close();
+                command2?.Connection?.Close();
+                command3?.Connection?.Close();
             }
 
         }
