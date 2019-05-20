@@ -38,11 +38,34 @@ namespace ProductsREST.Controllers
 			try {
 				int newID = SQL_Interface.Instance.AddNewItem(newProduct);
 
-				return SQL_Interface.Instance.GetProductById(newID);
+				Product resultProduct = SQL_Interface.Instance.GetProductById(newID);
+				Messenger.Instance.SendMessage(resultProduct, Messenger.MessageType.ProductUpdates);
+
+				return resultProduct;
 			}
-			catch(Exception e) {
+			catch(InvalidOperationException) {
 				return BadRequest();
 			}
+		}
+
+		// PUT api/values/5
+		[HttpPut("{productID}")]
+		public ActionResult Put(int productID, [FromBody] Product updatedProduct) {
+			try {
+				SQL_Interface.Instance.ChangeItem(productID, updatedProduct);
+
+				Product resultProduct = SQL_Interface.Instance.GetProductById(productID);
+				Messenger.Instance.SendMessage(resultProduct, Messenger.MessageType.ProductUpdates);
+
+				return NoContent();
+			}
+			catch(InvalidOperationException) {
+				return BadRequest();
+			}
+			catch(ArgumentOutOfRangeException) {
+				return NotFound();
+			}
+
 		}
     }
 }
