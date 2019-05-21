@@ -201,6 +201,7 @@ namespace REST_lib {
 				.Async(new PNPublishResultExt((publishResult, publishStatus) => {
 					if(!publishStatus.Error) {
 						WriteDebugMessage(string.Format("Published at DateTime {0}, Timetoken: {1}. Sent on {2}", DateTime.UtcNow, publishResult.Timetoken, mType.ToString()));
+						WriteDebugMessage("Sent: " + msg.ToString());
 					}
 					else {
 						WriteDebugMessage(publishStatus.Error.ToString());
