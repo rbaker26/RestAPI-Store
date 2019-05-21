@@ -132,7 +132,6 @@ namespace ordersREST
 			MySqlCommand command = null;
             try
             {
-				Console.WriteLine("Adding new order: " + email);
 				//string query = "SELECT * FROM products";
 				// SQLiteCommand command = m_dbConnection.CreateCommand();
 
@@ -140,13 +139,11 @@ namespace ordersREST
 				command.Connection.Open();
 				using(MySqlTransaction trans = command.Connection.BeginTransaction())
 				{
-					Console.WriteLine("Made it into using");
 
 					//command1.Connection.Open();
 
 
 					// Inset into `orders` table
-					Console.Write("Inserting into orders table... ");
 
 					string query1 = "INSERT INTO orders (user_id) VALUES ( (@email) );";
 					command.CommandText = query1;
@@ -155,10 +152,8 @@ namespace ordersREST
 					int rows_affected = command.ExecuteNonQuery();
 					command.Parameters.Clear();
 
-					Console.WriteLine("done");
 
 					// Get new order_id from the above query
-					Console.Write("Getting the order id... ");
 
 					string query2 = "SELECT order_id FROM orders WHERE user_id = (@email) ORDER BY order_id DESC limit 1;";
 					command.CommandText = query2;
@@ -173,7 +168,6 @@ namespace ordersREST
 					mysql_datareader.Close();
 					command.Parameters.Clear();
 
-					Console.WriteLine("done; got " + orderId);
 
 					// Insert the list of product updates into the `orders_list` tables
 					string query3 = "INSERT INTO orders_list (order_id, product_id, quantity, price) VALUES ( (@orderID), (@productID), (@quantity), (@price) );";
