@@ -107,7 +107,8 @@ public class CartController extends AbstractSceneController {
         //Checking to make sure the right product id is being removed
         System.out.println("Removing ProductID: " + item.getProductId());
         //Seeing the item removed from tableview cart visually
-        productSelected.forEach(allProducts::remove);
+        //productSelected.forEach(allProducts::remove);
+        getPurchases();
     }
 
     public Button getPurchaseButton() {
