@@ -101,6 +101,9 @@ public class LoginController extends AbstractSceneController {
             desgrid[i].setDescriptionObj(productUpdate.get(i).description);
             desgrid[i].setPriceObj(productUpdate.get(i).price);
             desgrid[i].setQuantityObj(productUpdate.get(i).quantity);
+            if(desgrid[i].getDescriptionObj().equals("Orange")) {
+                System.out.println(desgrid[i].getQuantityObj() + " Oranges````````````");
+            }
         }
         productList.getSelectionModel().selectedItemProperty().addListener( ov -> {
             popUp.setContentNode(desgrid[productList.getSelectionModel().getSelectedIndex()]);
