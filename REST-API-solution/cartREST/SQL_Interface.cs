@@ -71,19 +71,62 @@ namespace cartREST
             int Quantity = productUpdate.QuantityToBeRemoved;
 
             MySqlCommand command = null;
+            MySqlDataReader mysql_datareader = null;
             try
             {
-                // Get Quantity of item in database
-                string query1 = "INSERT into cart( user_id, product_id, quantity, purchased ) VALUES ( (@user_id), (@product_id), (@quantity), (@purchased) );";
+                // set if item exits
                 command = m_dbConnection.CreateCommand();
                 command.Connection.Open();
-                command.CommandText = query1;
-                command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
-                command.Parameters.Add("@product_id", MySqlDbType.Int32).Value = ProductId;
-                command.Parameters.Add("@quantity", MySqlDbType.Int32).Value = Quantity;
-                command.Parameters.Add("@purchased", MySqlDbType.Int32).Value = false;
+                string query0 = "SELECT * FROM cart WHERE user_id = (@userID) and product_id = (@productID);";
+                command.CommandText = query0;
+                command.Parameters.Add("@userID", MySqlDbType.String).Value = email;
+                command.Parameters.Add("@productID", MySqlDbType.Int32).Value = ProductId;
 
-                int rows_affected = command.ExecuteNonQuery();
+
+                mysql_datareader = command.ExecuteReader();
+                ProductUpdate temp = new ProductUpdate();
+                temp.ProductId = -1;
+                temp.QuantityToBeRemoved = -1;
+                while (mysql_datareader.Read())
+                {
+                    temp.ProductId = mysql_datareader.GetInt32(2);
+                    temp.QuantityToBeRemoved = mysql_datareader.GetInt32(3);
+                }
+                command.Connection.Close();
+                command = null;
+
+
+
+                if (temp.ProductId == -1)
+                {
+                    // Get Quantity of item in database
+                    string query1 = "INSERT into cart( user_id, product_id, quantity, purchased ) VALUES ( (@user_id), (@product_id), (@quantity), (@purchased) );";
+                    command = m_dbConnection.CreateCommand();
+                    command.Connection.Open();
+                    command.CommandText = query1;
+                    command.Parameters.Add("@user_id", MySqlDbType.String).Value = email;
+                    command.Parameters.Add("@product_id", MySqlDbType.Int32).Value = ProductId;
+                    command.Parameters.Add("@quantity", MySqlDbType.Int32).Value = Quantity;
+                    command.Parameters.Add("@purchased", MySqlDbType.Int32).Value = false;
+
+                    int rows_affected = command.ExecuteNonQuery();
+                }
+                else
+                {
+                    string query1 = "UPDATE cart SET quantity = (@newQuantity) WHERE product_id = (@productID) AND user_id = (@userID) ;";
+                    command = m_dbConnection.CreateCommand();
+                    command.Connection.Open();
+                    command.CommandText = query1;
+                    command.Parameters.Add("@productID", MySqlDbType.Int32).Value = ProductId;
+                    command.Parameters.Add("@newQuantity", MySqlDbType.Int32).Value = Quantity + temp.QuantityToBeRemoved;
+                    command.Parameters.Add("@userID", MySqlDbType.String).Value = email;
+                    int rows_affected = command.ExecuteNonQuery();
+                }
+
+
+
+
+
 
             }
             catch (Exception e)
@@ -97,6 +140,7 @@ namespace cartREST
             finally
             {
                 command?.Connection?.Close();
+                mysql_datareader?.Close();
             }
 
         }
@@ -142,6 +186,7 @@ namespace cartREST
 
                 if (purchase)
                 {
+                    command1.Connection?.Close();
                     string query2 = "UPDATE cart SET purchased = 1 WHERE user_id = (@user_id) AND purchased = 0;";
                     command2 = m_dbConnection.CreateCommand();
                     command2.Connection.Open();
