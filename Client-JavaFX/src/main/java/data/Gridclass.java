@@ -1,12 +1,14 @@
 package data;
 
 import Messages.CartHandler;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import data.Gridclass;
 import data.Product;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 
 import java.util.Formatter;
 
@@ -97,11 +99,28 @@ public class Gridclass extends GridPane {
 
             }
 
+            else if(Integer.parseInt(getQuantityField()) < 0 ) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Cannot input negative quantity.");
+
+                alert.showAndWait();
+
+            }
+
+
             else {
                 // this is where we need to add to a local cart
                 CartHandler.SendCartUpdate(new CartUpdate(this.email, new ProductUpdate(this.productId, parseInt(this.quantityField.getText()))));
                 System.out.println("Added to cart");
                 addedToCartAlert.setVisible(true);
+
+                PauseTransition visiblePause = new PauseTransition(
+                        Duration.seconds(3)
+                );
+                visiblePause.setOnFinished(
+                        ov -> addedToCartAlert.setVisible(false)
+                );
+                visiblePause.play();
             }
         });
     }
