@@ -2,6 +2,7 @@ import Messages.CartHandler;
 import Messages.ProductHandler;
 import UI.CartController;
 import UI.LoginController;
+import UI.RealLogin;
 import data.CartUpdate;
 import data.ProductUpdate;
 import data.RemoveCartUpdate;
@@ -12,9 +13,12 @@ public class Client extends Application {
 
     private static final double initWidth = 800;
     private static final double initHeight = 600;
+    private String userEmail = "helloitsme@adele.com";
 
     private LoginController loginController;
     private CartController cartController;
+    private RealLogin realLogin;
+
 
 
     @Override
@@ -23,8 +27,6 @@ public class Client extends Application {
         System.out.println("Get Request Test");
 //        ProductHandler ph = new ProductHandler();
 //        ph.GetProducts();
-        CartHandler.RemoveCartUpdate(new RemoveCartUpdate("bobby.likes.peen@gmail.com", 3));
-        CartHandler.PurchaseCart("bobby.likes.peen@gmail.com");
 
         System.out.println("*******************************************************************");
 
@@ -38,6 +40,8 @@ public class Client extends Application {
 //        System.out.println(productUpdate);
 //        System.out.println("**********************************");
 
+        //PUT THIS INSIDE THE LOGINCONTROLLER AND CARTCONTROLLER CONSTRUCTOR CALL
+
 
 
         try {
@@ -45,18 +49,53 @@ public class Client extends Application {
 
             primaryStage.setHeight(initHeight);
             primaryStage.setWidth(initWidth);
-
             loginController = new LoginController();
             cartController = new CartController();
 
 
-            loginController.getEnterButton().setOnAction(value -> {
-                System.out.println("Entering with email...");
+            realLogin = new RealLogin();
+
+            userEmail = realLogin.getEmailField();
+
+            realLogin.getEnterButton().setOnAction(value -> {
+                userEmail = realLogin.getEmailField();
+                if(!userEmail.equals("")) {
+                    loginController.setEmail(userEmail);
+                    cartController.setEmail(userEmail);
+                    loginController.applyScene(primaryStage);
+                }
+                else {
+                    System.out.println("Please enter email");
+                }
             });
+
+            /**
+             * THIS IS WHERE THE CUSTOMER GETS TO VIEW THEIR CART
+             * ORDERS. GETPURCHASE FUNCTION SHOULD FILL THE ARRAYLIST
+             * WITH CART ITEMS. JSON CODE SHOULD GIVE US BACK AN ARRAYLIST.
+             */
+            loginController.getSeeCart().setOnAction(value -> {
+
+                cartController.getPurchases();
+                cartController.applyScene(primaryStage);
+            });
+
+            cartController.getBackButton().setOnAction(value -> {
+                loginController.applyScene(primaryStage);
+            });
+
+            cartController.getPurchaseButton().setOnAction(value -> {
+                CartHandler.PurchaseCart(this.userEmail);
+                loginController.applyScene(primaryStage);
+            });
+            loginController.getSignOut().setOnAction(value -> {
+                realLogin.applyScene(primaryStage);
+            });
+
 
             // System.out.println("\n\n****************** IT WORKS ******************\n\n");
 
-            loginController.applyScene(primaryStage);
+            realLogin.applyScene(primaryStage);
             primaryStage.show();
 
         } catch (Exception ex) {
