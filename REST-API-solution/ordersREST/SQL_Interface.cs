@@ -126,84 +126,83 @@ namespace ordersREST
 
         public void AddNewOrder(string email, List<ProductUpdate> orderList)
         {
-            MySqlCommand command1 = null;
-            MySqlCommand command2 = null;
-            MySqlCommand command3 = null;
+			Dictionary<int, float> prices = GetAllPrices();
+
+
+			MySqlCommand command = null;
             try
             {
-                //string query = "SELECT * FROM products";
-                // SQLiteCommand command = m_dbConnection.CreateCommand();
-                using (MySqlTransaction trans = m_dbConnection.BeginTransaction())
-                {
-                    command1 = m_dbConnection.CreateCommand();
-                    command1.Connection.Open();
+				Console.WriteLine("Adding new order: " + email);
+				//string query = "SELECT * FROM products";
+				// SQLiteCommand command = m_dbConnection.CreateCommand();
+
+				command = m_dbConnection.CreateCommand();
+				command.Connection.Open();
+				using(MySqlTransaction trans = command.Connection.BeginTransaction())
+				{
+					Console.WriteLine("Made it into using");
+
+					//command1.Connection.Open();
 
 
-                    // Inset into `orders` table
-                    string query1 = "INSERT INTO orders (user_id) VALUES ( (@email) );";
-                    command1.CommandText = query1;
-                    command1.Parameters.Add("@email", MySqlDbType.String).Value = email;
+					// Inset into `orders` table
+					Console.Write("Inserting into orders table... ");
 
-                    int rows_affected = command1.ExecuteNonQuery();
+					string query1 = "INSERT INTO orders (user_id) VALUES ( (@email) );";
+					command.CommandText = query1;
+					command.Parameters.Add("@email", MySqlDbType.String).Value = email;
 
+					int rows_affected = command.ExecuteNonQuery();
+					command.Parameters.Clear();
 
-                    // Get new order_id from the above query
-                    command2 = m_dbConnection.CreateCommand();
-                    command2.Connection.Open();
-                    string query2 = "SELECT order_id FROM orders WHERE user_id = (@email) ORDER BY order_id DESC limit 1;";
-                    command2.CommandText = query2;
-                    command2.Parameters.Add("@email", MySqlDbType.String).Value = email;
-                    MySqlDataReader mysql_datareader;
+					Console.WriteLine("done");
 
-                    mysql_datareader = command2.ExecuteReader();
-                    int orderId = -1;
-                    while (mysql_datareader.Read())
-                    {
-                        orderId = mysql_datareader.GetInt32(0);
-                    }
-                    mysql_datareader.Close();
+					// Get new order_id from the above query
+					Console.Write("Getting the order id... ");
 
+					string query2 = "SELECT order_id FROM orders WHERE user_id = (@email) ORDER BY order_id DESC limit 1;";
+					command.CommandText = query2;
+					command.Parameters.Add("@email", MySqlDbType.String).Value = email;
+					MySqlDataReader mysql_datareader;
 
-                    // Insert the list of product updates into the `orders_list` tables
-                    command3 = m_dbConnection.CreateCommand();
-                    command3.Connection.Open();
-                    string query3 = "INSERT INTO orders_list (order_id, product_id, quantity, price) VALUES ( (@orderID), (@productID), (@quantity), (@price) );";
-                    command3.CommandText = query3;
+					mysql_datareader = command.ExecuteReader();
+					int orderId = -1;
+					while(mysql_datareader.Read()) {
+						orderId = mysql_datareader.GetInt32(0);
+					}
+					mysql_datareader.Close();
+					command.Parameters.Clear();
 
-                    // ya i know, shut up
-                    bool first = true;
-                    foreach(ProductUpdate productUpdate in orderList)
-                    {
-						float price;
-						try {
-							price = GetPrice(productUpdate.ProductId);
+					Console.WriteLine("done; got " + orderId);
+
+					// Insert the list of product updates into the `orders_list` tables
+					string query3 = "INSERT INTO orders_list (order_id, product_id, quantity, price) VALUES ( (@orderID), (@productID), (@quantity), (@price) );";
+					command.CommandText = query3;
+
+					// ya i know, shut up
+					bool first = true;
+					foreach(ProductUpdate productUpdate in orderList) {
+
+						if(first) {
+							command.Parameters.Add("@orderID", MySqlDbType.Int32).Value = orderId;
+							command.Parameters.Add("@productID", MySqlDbType.Int32).Value = productUpdate.ProductId;
+							command.Parameters.Add("@quantity", MySqlDbType.Int32).Value = productUpdate.QuantityToBeRemoved;
+							command.Parameters.Add("@price", MySqlDbType.Float).Value = prices.GetValueOrDefault(productUpdate.ProductId, 0);
+							first = false;
 						}
-						catch(Exception) {
-							price = 0;
+						else {
+							command.Parameters["@orderID"].Value = orderId;
+							command.Parameters["@productID"].Value = productUpdate.ProductId;
+							command.Parameters["@quantity"].Value = productUpdate.QuantityToBeRemoved;
+							command.Parameters["@price"].Value = prices.GetValueOrDefault(productUpdate.ProductId, 0);
 						}
 
-                        if(first)
-                        {
-                            command3.Parameters.Add("@orderID", MySqlDbType.Int32).Value = orderId;
-                            command3.Parameters.Add("@productID", MySqlDbType.Int32).Value = productUpdate.ProductId;
-                            command3.Parameters.Add("@quantity", MySqlDbType.Int32).Value = productUpdate.QuantityToBeRemoved;
-							command3.Parameters.Add("@price", MySqlDbType.Float).Value = price;
-                            first = false;
-                        }
-                        else
-                        {
-                            command3.Parameters["@orderID"].Value = orderId;
-                            command3.Parameters["@productID"].Value = productUpdate.ProductId; 
-                            command3.Parameters["@quantity"].Value = productUpdate.QuantityToBeRemoved;
-							command3.Parameters["@price"].Value = price;
-                        }
-                        
-                        int row_affected = command3.ExecuteNonQuery();
-                    }
-                    
+						int row_affected = command.ExecuteNonQuery();
+					}
 
-                    trans.Commit();
-                }
+
+					trans.Commit();
+				}
             }
             catch (Exception e)
             { 
@@ -216,9 +215,7 @@ namespace ordersREST
             }
             finally
             {
-                command1?.Connection?.Close();
-                command2?.Connection?.Close();
-                command3?.Connection?.Close();
+                command?.Connection?.Close();
             }
 
         }
@@ -262,6 +259,42 @@ namespace ordersREST
 				command?.Connection?.Close();
 			}
 
+		}
+
+		public Dictionary<int, float> GetAllPrices() {
+			Dictionary<int, float> result = new Dictionary<int, float>();
+
+			MySqlDataReader mysql_datareader = null;
+			MySqlCommand command = null;
+			try {
+				string query = "SELECT id, price FROM products";
+				command = m_dbConnection.CreateCommand();
+				command.Connection.Open();
+				command.CommandText = query;
+
+				mysql_datareader = command.ExecuteReader();
+
+				while(mysql_datareader.Read()) {
+					int id = mysql_datareader.GetInt32(0);
+					float price = mysql_datareader.GetFloat(1);
+
+					result[id] = price;
+				}
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+			}
+			finally {
+				mysql_datareader?.Close();
+				command?.Connection?.Close();
+			}
+
+			return result;
 		}
 
 		/// <summary>

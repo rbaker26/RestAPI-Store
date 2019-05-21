@@ -21,15 +21,6 @@ namespace ordersREST
             // Listen for Carts published on the newOrders channel.
             // Send this cart to the database.
             Messenger.CreateInstance("Orders", makeVerbose: true);
-			/*
-            Messenger.Instance.SetupListener<Cart>((Cart c) => {
-
-            }, Messenger.MessageType.NewOrders);
-
-			Messenger.Instance.SetupListener<Product>((Product p) => {
-
-			}, Messenger.MessageType.ProductUpdates);
-			*/
 			Messenger.Instance.pn.AddListener(new OrdersPubnubCallback());
 			Messenger.Instance.pn.Subscribe<string>()
 				.Channels(new string[] { Messenger.MessageType.NewOrders.ToString(), Messenger.MessageType.ProductChanges.ToString() })
