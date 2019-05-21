@@ -21,10 +21,10 @@ namespace ordersREST
             // Listen for Carts published on the newOrders channel.
             // Send this cart to the database.
             Messenger.CreateInstance("Orders", makeVerbose: true);
-            Messenger.Instance.SetupListener<Cart>((Cart c) => {
-                Console.Out.WriteLine(c);
-                SQL_Interface.Instance.AddNewOrder(c.Email, c.ShoppingCart);
-            }, Messenger.MessageType.NewOrders);
+			Messenger.Instance.pn.AddListener(new OrdersPubnubCallback());
+			Messenger.Instance.pn.Subscribe<string>()
+				.Channels(new string[] { Messenger.MessageType.NewOrders.ToString(), Messenger.MessageType.ProductChanges.ToString() })
+				.Execute();
 
 
             // Setup WebServer

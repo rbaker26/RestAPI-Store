@@ -39,7 +39,7 @@ namespace ProductsREST.Controllers
 				int newID = SQL_Interface.Instance.AddNewItem(newProduct);
 
 				Product resultProduct = SQL_Interface.Instance.GetProductById(newID);
-				Messenger.Instance.SendMessage(resultProduct, Messenger.MessageType.ProductUpdates);
+				Messenger.Instance.SendMessage(resultProduct, Messenger.MessageType.ProductChanges);
 
 				return resultProduct;
 			}
@@ -55,7 +55,7 @@ namespace ProductsREST.Controllers
 				SQL_Interface.Instance.ChangeItem(productID, updatedProduct);
 
 				Product resultProduct = SQL_Interface.Instance.GetProductById(productID);
-				Messenger.Instance.SendMessage(resultProduct, Messenger.MessageType.ProductUpdates);
+				Messenger.Instance.SendMessage(resultProduct, Messenger.MessageType.ProductChanges);
 
 				return NoContent();
 			}

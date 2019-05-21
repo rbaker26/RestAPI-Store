@@ -35,7 +35,7 @@ namespace REST_lib {
 
 				//Messenger.Instance.SendMessage(new Product(10, "Send", 30, 4.99f), Messenger.MessageType.ProductUpdates);
 				//Messenger.Instance.SendMessage(new Order(20, "HO", 490), Messenger.MessageType.ProductUpdates);
-				Messenger.WriteDebugMessage("Listening on these channels: " + string.Join(",", status.AffectedChannels) ); 
+				Messenger.WriteDebugMessage(sourceChannel + ": Listening on these channels: " + string.Join(",", status.AffectedChannels) );
 			}
 			else {
 				Messenger.WriteDebugMessage("Failed to subscribe. Dumping status: " + status.ToString());

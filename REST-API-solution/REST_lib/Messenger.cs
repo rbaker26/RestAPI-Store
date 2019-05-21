@@ -160,7 +160,9 @@ namespace REST_lib {
 		}
 		#endregion
 
-		private Pubnub pn;
+		public Pubnub pn {
+			get; private set;
+		}
 
 
 
@@ -172,14 +174,27 @@ namespace REST_lib {
 			/// <summary>
 			/// Used order messages. Sent when the cart service is told to place an
 			/// order.
+			/// 
+			/// Has Cart sent.
 			/// </summary>
 			NewOrders,
 
+			// TODO Should be renamed to InventoryUpdates
 			/// <summary>
 			/// Used to notify other services that the inventory has changed. Sent when
-			/// a successful POST request is made to the product service.
+			/// a PUT has been sent to the cart.
+			///
+			/// Has List<ProductUpdate> sent.
 			/// </summary>
-			ProductUpdates
+			ProductUpdates,
+
+			/// <summary>
+			/// Used to notify other services that new products have been added to the
+			/// Product database, or a product has been changed.
+			/// 
+			/// Has Product sent across.
+			/// </summary>
+			ProductChanges
 		}
 
 		/// <summary>
