@@ -132,6 +132,7 @@ namespace ordersREST
 
 			List<Order> orders = new List<Order>();
 
+			MySqlDataReader reader = null;
 			MySqlCommand idCommand = null;		// Used to get the relevant IDs
 			MySqlCommand orderCommand = null;   // Used to get the orders
 			try {
@@ -144,23 +145,24 @@ namespace ordersREST
 
 				List<int> orderIDs = new List<int>();
 
-				using(MySqlDataReader reader = idCommand.ExecuteReader()) {
+				reader = idCommand.ExecuteReader();
 
-					Console.WriteLine("Reading IDs");
+				Console.WriteLine("Reading IDs");
 
-					while(reader.Read()) {
-						Console.WriteLine(reader.GetInt32(0));
-						orderIDs.Add(reader.GetInt32(0));
+				while(reader.Read()) {
+					int id = reader.GetInt32(0);
+					Console.WriteLine(id);
+					orderIDs.Add(id);
 
-						//*************************
-						//* Debug Code            *
-						//*************************
-						//Console.WriteLine("\n\n\n\n****************************************************************************");
-						//Console.WriteLine(orderIDs[orderIDs.Count - 1]);
-						//*************************
-					} // End of while
-				} // End of using
+					//*************************
+					//* Debug Code            *
+					//*************************
+					//Console.WriteLine("\n\n\n\n****************************************************************************");
+					//Console.WriteLine(orderIDs[orderIDs.Count - 1]);
+					//*************************
+				} // End of while
 
+				reader.Close();
 				idCommand.Connection.Close();
 
 				Console.WriteLine(orderIDs.Count);
@@ -175,20 +177,20 @@ namespace ordersREST
 
 					Order resultOrder = new Order(id, email, TimeStamp: 0); // TODO TimeStamp lawl
 
-					using(MySqlDataReader reader = orderCommand.ExecuteReader()) {
-						while(reader.Read()) {
-							int productID = reader.GetInt32(0);
-							int quantity = reader.GetInt32(1);
-							float price = 0;
-							if(!reader.IsDBNull(2)) {
-								price = reader.GetFloat(2);
-							}
+					reader = orderCommand.ExecuteReader();
+					while(reader.Read()) {
+						int productID = reader.GetInt32(0);
+						int quantity = reader.GetInt32(1);
+						float price = 0;
+						if(!reader.IsDBNull(2)) {
+							price = reader.GetFloat(2);
+						}
 
-							//resultOrder.ShoppingCart.Add(new ProductUpdate(productID, quantity));
-							resultOrder.ShoppingCart.Add(new Product(productID, "", quantity, price));
-						} // End while(reader.Read())
-					} // End using(reader)
+						//resultOrder.ShoppingCart.Add(new ProductUpdate(productID, quantity));
+						resultOrder.ShoppingCart.Add(new Product(productID, "", quantity, price));
+					} // End while(reader.Read())
 
+					reader.Close();
 					orderCommand.Connection.Close();
 
 					orders.Add(resultOrder);
@@ -210,6 +212,7 @@ namespace ordersREST
 			finally {
 				idCommand?.Connection?.Close();
 				orderCommand?.Connection?.Close();
+				reader?.Close();
 			}
 
 
