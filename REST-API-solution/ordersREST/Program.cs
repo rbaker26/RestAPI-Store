@@ -23,15 +23,18 @@ namespace ordersREST
             Messenger.CreateInstance("Orders", makeVerbose: true);
 			/*
             Messenger.Instance.SetupListener<Cart>((Cart c) => {
-                Console.Out.WriteLine(c);
-                SQL_Interface.Instance.AddNewOrder(c.Email, c.ShoppingCart);
+
             }, Messenger.MessageType.NewOrders);
-			*/
 
 			Messenger.Instance.SetupListener<Product>((Product p) => {
-				Console.Out.WriteLine("Received product: " + p);
-				SQL_Interface.Instance.SetProductInfo(p);
+
 			}, Messenger.MessageType.ProductUpdates);
+			*/
+			Messenger.Instance.pn.AddListener(new OrdersPubnubCallback());
+			Messenger.Instance.pn.Subscribe<string>()
+				.Channels(new string[] { Messenger.MessageType.NewOrders.ToString(), Messenger.MessageType.ProductChanges.ToString() })
+				.Execute();
+
 
             // Setup WebServer
             try {

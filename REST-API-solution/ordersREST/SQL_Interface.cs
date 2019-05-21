@@ -167,25 +167,35 @@ namespace ordersREST
                     // Insert the list of product updates into the `orders_list` tables
                     command3 = m_dbConnection.CreateCommand();
                     command3.Connection.Open();
-                    string query3 = "INSERT INTO orders_list (order_id, product_id, quantity) VALUES ( (@orderID), (@productID), (@quantity) );";
+                    string query3 = "INSERT INTO orders_list (order_id, product_id, quantity, price) VALUES ( (@orderID), (@productID), (@quantity), (@price) );";
                     command3.CommandText = query3;
 
                     // ya i know, shut up
                     bool first = true;
                     foreach(ProductUpdate productUpdate in orderList)
                     {
+						float price;
+						try {
+							price = GetPrice(productUpdate.ProductId);
+						}
+						catch(Exception) {
+							price = 0;
+						}
+
                         if(first)
                         {
                             command3.Parameters.Add("@orderID", MySqlDbType.Int32).Value = orderId;
                             command3.Parameters.Add("@productID", MySqlDbType.Int32).Value = productUpdate.ProductId;
                             command3.Parameters.Add("@quantity", MySqlDbType.Int32).Value = productUpdate.QuantityToBeRemoved;
+							command3.Parameters.Add("@price", MySqlDbType.Float).Value = price;
                             first = false;
                         }
                         else
                         {
                             command3.Parameters["@orderID"].Value = orderId;
                             command3.Parameters["@productID"].Value = productUpdate.ProductId; 
-                            command3.Parameters["@quantity"].Value = productUpdate.QuantityToBeRemoved; 
+                            command3.Parameters["@quantity"].Value = productUpdate.QuantityToBeRemoved;
+							command3.Parameters["@price"].Value = price;
                         }
                         
                         int row_affected = command3.ExecuteNonQuery();
