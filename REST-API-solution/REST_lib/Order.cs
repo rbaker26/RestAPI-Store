@@ -29,7 +29,7 @@ namespace REST_lib
         /// <ProductID, QuantityPurchased>
         /// This way the client cannot change things like the price of quantity on hand
         /// </summary>
-        public List<KeyValuePair<int, int>> ShoppingCart { get; set; }
+        public List<Product> ShoppingCart { get; set; }
         //********************************************************************************
 
 

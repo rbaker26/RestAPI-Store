@@ -59,8 +59,8 @@ namespace ordersREST
                 Database = "ordersREST_db",
                 UserID = "recorder",
                 Password = "recorder0",
-                MinimumPoolSize = 20,
-                MaximumPoolSize = 50
+                MinimumPoolSize = 10,
+                MaximumPoolSize = 20
             };
 
             return new MySqlConnection(mscsb.ToString());
@@ -68,6 +68,7 @@ namespace ordersREST
         #endregion
         //*****************************************************************************************
 
+			/*
         public List<Order> GetOrders()
         {
             List<Order> orders = new List<Order>();
@@ -123,8 +124,104 @@ namespace ordersREST
 
             return orders;
         }
+		*/
 
-        public void AddNewOrder(string email, List<ProductUpdate> orderList)
+		public List<Order> GetOrders(string email) {
+			// I considered changing this to return a list of lists of ProductUpdates, but I think
+			// it's better to return a list of orders. We can bundle order-specific things this way.
+
+			List<Order> orders = new List<Order>();
+
+			MySqlDataReader reader = null;
+			MySqlCommand idCommand = null;		// Used to get the relevant IDs
+			MySqlCommand orderCommand = null;   // Used to get the orders
+			try {
+				string idQuery = "SELECT order_id FROM orders WHERE user_id = @email";
+
+				idCommand = m_dbConnection.CreateCommand();
+				idCommand.Connection.Open();
+				idCommand.CommandText = idQuery;
+				idCommand.Parameters.Add("@email", MySqlDbType.String).Value = email;
+
+				List<int> orderIDs = new List<int>();
+
+				reader = idCommand.ExecuteReader();
+
+				Console.WriteLine("Reading IDs");
+
+				while(reader.Read()) {
+					int id = reader.GetInt32(0);
+					Console.WriteLine(id);
+					orderIDs.Add(id);
+
+					//*************************
+					//* Debug Code            *
+					//*************************
+					//Console.WriteLine("\n\n\n\n****************************************************************************");
+					//Console.WriteLine(orderIDs[orderIDs.Count - 1]);
+					//*************************
+				} // End of while
+
+				reader.Close();
+				idCommand.Connection.Close();
+
+				Console.WriteLine(orderIDs.Count);
+
+				foreach(int id in orderIDs) {
+					string orderQuery = "SELECT product_id, quantity, price FROM orders_list where order_id = (@id)";
+
+					orderCommand = m_dbConnection.CreateCommand();
+					orderCommand.Connection.Open();
+					orderCommand.CommandText = orderQuery;
+					orderCommand.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
+
+					Order resultOrder = new Order(id, email, TimeStamp: 0); // TODO TimeStamp lawl
+
+					reader = orderCommand.ExecuteReader();
+					while(reader.Read()) {
+						int productID = reader.GetInt32(0);
+						int quantity = reader.GetInt32(1);
+						float price = 0;
+						if(!reader.IsDBNull(2)) {
+							price = reader.GetFloat(2);
+						}
+
+						//resultOrder.ShoppingCart.Add(new ProductUpdate(productID, quantity));
+						resultOrder.ShoppingCart.Add(new Product(productID, "", quantity, price));
+					} // End while(reader.Read())
+
+					reader.Close();
+					orderCommand.Connection.Close();
+
+					orders.Add(resultOrder);
+
+				} // End foreach(id)
+
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine(e.StackTrace);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+				// Clean this out; we don't want to return anything if we bumped into an exception.
+				orders = new List<Order>();
+			}
+			finally {
+				idCommand?.Connection?.Close();
+				orderCommand?.Connection?.Close();
+				reader?.Close();
+			}
+
+
+			return orders;
+		}
+
+
+
+		public void AddNewOrder(string email, List<ProductUpdate> orderList)
         {
 			Dictionary<int, float> prices = GetAllPrices();
 
