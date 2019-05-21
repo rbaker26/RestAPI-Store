@@ -86,6 +86,7 @@ public class Client extends Application {
 
             cartController.getPurchaseButton().setOnAction(value -> {
                 CartHandler.PurchaseCart(this.userEmail);
+                loginController.updateInventoryNumbers();
                 loginController.applyScene(primaryStage);
             });
             loginController.getSignOut().setOnAction(value -> {

@@ -92,6 +92,21 @@ public class LoginController extends AbstractSceneController {
         desgrid = new Gridclass[productUpdate.size()];
     }
 
+    public void updateInventoryNumbers() {
+        popUp = new PopOver();
+        populateListView();
+        setUpPopUp();
+        for(int i = 0; i < productUpdate.size(); i++) {
+            desgrid[i] = new Gridclass(productUpdate.get(i).productId, this.usersEmail);
+            desgrid[i].setDescriptionObj(productUpdate.get(i).description);
+            desgrid[i].setPriceObj(productUpdate.get(i).price);
+            desgrid[i].setQuantityObj(productUpdate.get(i).quantity);
+        }
+        productList.getSelectionModel().selectedItemProperty().addListener( ov -> {
+            popUp.setContentNode(desgrid[productList.getSelectionModel().getSelectedIndex()]);
+            popUp.show(grid, mouseX + popupOffsetX, mouseY + popupOffsetY);
+        });
+    }
     public void getProducts() {
         this.productUpdate = ProductHandler.GetProducts();
     }
