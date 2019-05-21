@@ -214,5 +214,134 @@ namespace ordersREST
         }
 
 
-    }
+		public void SetProductInfo(Product p) {
+
+			//MySqlDataReader mysql_datareader = null;
+			MySqlCommand command = null;
+			try {
+
+				bool newProduct = !HasProduct(p.ProductId);
+				Console.WriteLine("Is this product new? " + newProduct);
+
+				command = m_dbConnection.CreateCommand();
+				command.Connection.Open();
+				if(newProduct) {
+					command.CommandText = "INSERT INTO products(id, price) VALUES(@id, @price)";
+				}
+				else {
+					command.CommandText = "UPDATE products SET price = @price WHERE id = @id";
+				}
+				command.Parameters.Add("@id", MySqlDbType.Int32).Value = p.ProductId;
+				command.Parameters.Add("@price", MySqlDbType.Float).Value = p.Price;
+
+				//mysql_datareader = command.ExecuteReader();
+				int rowsEffected = command.ExecuteNonQuery();
+
+				Console.WriteLine("Set the product info. Rows effected: " + rowsEffected);
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+			}
+			finally {
+				//mysql_datareader?.Close();
+				command?.Connection?.Close();
+			}
+
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="productID"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if productID is not found.</exception>
+		public float GetPrice(int productID) {
+
+			float result = -1;
+
+			MySqlDataReader mysql_datareader = null;
+			MySqlCommand command = null;
+			try {
+				string query = "SELECT price FROM products WHERE id = @id";
+				command = m_dbConnection.CreateCommand();
+				command.Connection.Open();
+				command.CommandText = query;
+				command.Parameters.Add("@id", MySqlDbType.Int32).Value = productID;
+
+				mysql_datareader = command.ExecuteReader();
+
+				if(mysql_datareader.Read()) {
+					result = mysql_datareader.GetFloat(0);
+				}
+				else {
+					throw new ArgumentOutOfRangeException("productID");
+				}
+			}
+			catch(ArgumentOutOfRangeException e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+				throw e;
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+			}
+			finally {
+				mysql_datareader?.Close();
+				command?.Connection?.Close();
+			}
+
+			return result;
+		}
+
+		public bool HasProduct(int productID) {
+
+			bool result = false;
+
+			MySqlDataReader mysql_datareader = null;
+			MySqlCommand command = null;
+			try {
+				string query = "SELECT price FROM products WHERE id = @id";
+				command = m_dbConnection.CreateCommand();
+				command.Connection.Open();
+				command.CommandText = query;
+				command.Parameters.Add("@id", MySqlDbType.Int32).Value = productID;
+
+				mysql_datareader = command.ExecuteReader();
+
+				if(mysql_datareader.Read()) {
+					result = true;
+				}
+			}
+			catch(Exception e) {
+				Console.Out.WriteLine("\n\n**********************************************************************");
+				Console.Out.WriteLine(e.Message);
+				Console.Out.WriteLine(e.InnerException);
+				Console.Out.WriteLine(e.Source);
+				Console.Out.WriteLine("**********************************************************************\n\n");
+
+			}
+			finally {
+				mysql_datareader?.Close();
+				command?.Connection?.Close();
+			}
+
+			return result;
+		}
+
+
+	}
 }
