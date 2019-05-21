@@ -77,7 +77,7 @@ namespace cartREST
                 // set if item exits
                 command = m_dbConnection.CreateCommand();
                 command.Connection.Open();
-                string query0 = "SELECT * FROM cart WHERE user_id = (@userID) and product_id = (@productID);";
+                string query0 = "SELECT * FROM cart WHERE user_id = (@userID) and product_id = (@productID) and purchased = false;";
                 command.CommandText = query0;
                 command.Parameters.Add("@userID", MySqlDbType.String).Value = email;
                 command.Parameters.Add("@productID", MySqlDbType.Int32).Value = ProductId;
